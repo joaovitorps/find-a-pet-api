@@ -1,13 +1,18 @@
 {
+  "include": ["./src/**/*"],
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
 
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
+    "module": "esnext",
     "target": "esnext",
     "lib": ["esnext"],
     "types": ["node"],
@@ -35,6 +40,13 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+
+    // My config
+    "moduleResolution": "bundler",
+
+    // Prisma
+    "esModuleInterop": true,
+    "ignoreDeprecations": "6.0"
   }
 }
