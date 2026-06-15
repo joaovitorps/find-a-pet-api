@@ -1,10 +1,8 @@
-import css from "@eslint/css";
-import js from "@eslint/js";
-import json from "@eslint/json";
-import markdown from "@eslint/markdown";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "eslint/config";
+import css from "@eslint/css";
+import js from "@eslint/js";
+import { defineConfig, globalIgnores } from "eslint/config";
 import boundaries, {
   type Config,
   type Rules,
@@ -16,6 +14,7 @@ import tseslint from "typescript-eslint";
 const rootPath = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig([
+  globalIgnores(["dist"]),
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
     plugins: { js },
@@ -179,18 +178,6 @@ export default defineConfig([
       ],
     } satisfies Settings & Record<string, unknown>,
   } satisfies Config,
-  {
-    files: ["**/*.json"],
-    plugins: { json },
-    language: "json/json",
-    extends: ["json/recommended"],
-  },
-  {
-    files: ["**/*.md"],
-    plugins: { markdown },
-    language: "markdown/commonmark",
-    extends: ["markdown/recommended"],
-  },
   {
     files: ["**/*.css"],
     plugins: { css },
