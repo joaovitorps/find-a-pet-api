@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import css from "@eslint/css";
@@ -12,6 +14,52 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 const rootPath = dirname(fileURLToPath(import.meta.url));
+
+const boundariesSettings = {
+  "boundaries/root-path": rootPath,
+  "boundaries/include": ["src/**/*.ts"],
+  "boundaries/elements": [
+    {
+      type: "test",
+      pattern: ["src/test/**/*.ts", "src/**/*.test.ts"],
+      mode: "full",
+    },
+    {
+      type: "generated-prisma",
+      pattern: "src/generated/prisma/**/*.ts",
+      mode: "full",
+    },
+    { type: "types", pattern: "src/@types/**/*.ts", mode: "full" },
+    { type: "core", pattern: "src/core/**/*.ts", mode: "full" },
+    {
+      type: "enterprise",
+      pattern: "src/domain/*/enterprise/**/*.ts",
+      mode: "full",
+      capture: ["context"],
+    },
+    {
+      type: "application",
+      pattern: "src/domain/*/application/**/*.ts",
+      mode: "full",
+      capture: ["context"],
+    },
+    { type: "presentation", pattern: "src/http/**/*.ts", mode: "full" },
+    {
+      type: "infrastructure",
+      pattern: ["src/lib/**/*.ts", "src/env/**/*.ts"],
+      mode: "full",
+    },
+  ],
+} satisfies Settings;
+
+const resolverSettings = {
+  "import/resolver": {
+    typescript: {
+      project: "./tsconfig.json",
+      alwaysTryTypes: true,
+    },
+  },
+};
 
 export default defineConfig([
   globalIgnores(["dist"]),
@@ -136,47 +184,9 @@ export default defineConfig([
       ],
     } satisfies Rules,
     settings: {
-      "boundaries/root-path": rootPath,
-      "boundaries/include": ["src/**/*.ts"],
-      "import/resolver": {
-        typescript: {
-          project: "./tsconfig.json",
-          alwaysTryTypes: true,
-        },
-      },
-      "boundaries/elements": [
-        {
-          type: "test",
-          pattern: ["src/test/**/*.ts", "src/**/*.test.ts"],
-          mode: "full",
-        },
-        {
-          type: "generated-prisma",
-          pattern: "src/generated/prisma/**/*.ts",
-          mode: "full",
-        },
-        { type: "types", pattern: "src/@types/**/*.ts", mode: "full" },
-        { type: "core", pattern: "src/core/**/*.ts", mode: "full" },
-        {
-          type: "enterprise",
-          pattern: "src/domain/*/enterprise/**/*.ts",
-          mode: "full",
-          capture: ["context"],
-        },
-        {
-          type: "application",
-          pattern: "src/domain/*/application/**/*.ts",
-          mode: "full",
-          capture: ["context"],
-        },
-        { type: "presentation", pattern: "src/http/**/*.ts", mode: "full" },
-        {
-          type: "infrastructure",
-          pattern: ["src/lib/**/*.ts", "src/env/**/*.ts"],
-          mode: "full",
-        },
-      ],
-    } satisfies Settings & Record<string, unknown>,
+      ...boundariesSettings,
+      ...resolverSettings,
+    },
   } satisfies Config,
   {
     files: ["**/*.css"],
