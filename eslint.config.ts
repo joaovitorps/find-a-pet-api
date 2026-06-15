@@ -2,6 +2,8 @@ import css from "@eslint/css";
 import js from "@eslint/js";
 import json from "@eslint/json";
 import markdown from "@eslint/markdown";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "eslint/config";
 import boundaries, {
   type Config,
@@ -10,6 +12,8 @@ import boundaries, {
 } from "eslint-plugin-boundaries";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+
+const rootPath = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig([
   {
@@ -21,40 +25,159 @@ export default defineConfig([
   },
   tseslint.configs.recommended,
   {
-    files: ["**/*.{ts}"],
+    files: ["**/*.ts"],
     plugins: {
       boundaries,
     },
     rules: {
       ...boundaries.configs.recommended.rules,
       "boundaries/dependencies": [
-        2,
+        "warn",
         {
           default: "disallow",
+          checkAllOrigins: true,
+          checkUnknownLocals: true,
           rules: [
             {
-              from: { type: "controller" },
-              allow: [{ type: "model" }, { type: "view" }],
+              allow: [{ to: { origin: "external" } }],
             },
             {
-              from: { type: "view" },
-              allow: [{ type: "model" }],
+              allow: [{ to: { origin: "core" } }],
             },
             {
-              from: { type: "model" },
-              disallow: [{ type: "*" }],
+              from: { type: "enterprise" },
+              disallow: [
+                {
+                  to: { origin: "external" },
+                  dependency: {
+                    module: [
+                      "fastify",
+                      "@prisma/client",
+                      "@prisma/adapter-pg",
+                      "dotenv",
+                    ],
+                  },
+                },
+              ],
+            },
+            {
+              from: { type: "core" },
+              allow: [{ to: { type: "core" } }, { to: { type: "types" } }],
+            },
+            {
+              from: { type: "enterprise" },
+              allow: [
+                {
+                  to: {
+                    type: "enterprise",
+                    captured: { context: "{{ from.captured.context }}" },
+                  },
+                },
+                { to: { type: "core" } },
+                { to: { type: "types" } },
+                { to: { type: "generated-prisma" } },
+              ],
+            },
+            {
+              from: { type: "application" },
+              allow: [
+                {
+                  to: {
+                    type: "application",
+                    captured: { context: "{{ from.captured.context }}" },
+                  },
+                },
+                {
+                  to: {
+                    type: "enterprise",
+                    captured: { context: "{{ from.captured.context }}" },
+                  },
+                },
+                { to: { type: "core" } },
+                { to: { type: "types" } },
+                { to: { type: "generated-prisma" } },
+              ],
+            },
+            {
+              from: { type: "presentation" },
+              allow: [
+                { to: { type: "application" } },
+                { to: { type: "enterprise" } },
+                { to: { type: "core" } },
+                { to: { type: "types" } },
+                { to: { type: "generated-prisma" } },
+              ],
+            },
+            {
+              from: { type: "infrastructure" },
+              allow: [
+                { to: { type: "application" } },
+                { to: { type: "enterprise" } },
+                { to: { type: "core" } },
+                { to: { type: "types" } },
+                { to: { type: "infrastructure" } },
+                { to: { type: "generated-prisma" } },
+              ],
+            },
+            {
+              from: { type: "test" },
+              allow: [
+                { to: { type: "application" } },
+                { to: { type: "enterprise" } },
+                { to: { type: "core" } },
+                { to: { type: "types" } },
+                { to: { type: "infrastructure" } },
+                { to: { type: "presentation" } },
+                { to: { type: "test" } },
+                { to: { type: "generated-prisma" } },
+              ],
             },
           ],
         },
       ],
     } satisfies Rules,
     settings: {
+      "boundaries/root-path": rootPath,
+      "boundaries/include": ["src/**/*.ts"],
+      "import/resolver": {
+        typescript: {
+          project: "./tsconfig.json",
+          alwaysTryTypes: true,
+        },
+      },
       "boundaries/elements": [
-        { type: "controller", pattern: "controllers/*" },
-        { type: "model", pattern: "models/*" },
-        { type: "view", pattern: "views/*" },
+        {
+          type: "test",
+          pattern: ["src/test/**/*.ts", "src/**/*.test.ts"],
+          mode: "full",
+        },
+        {
+          type: "generated-prisma",
+          pattern: "src/generated/prisma/**/*.ts",
+          mode: "full",
+        },
+        { type: "types", pattern: "src/@types/**/*.ts", mode: "full" },
+        { type: "core", pattern: "src/core/**/*.ts", mode: "full" },
+        {
+          type: "enterprise",
+          pattern: "src/domain/*/enterprise/**/*.ts",
+          mode: "full",
+          capture: ["context"],
+        },
+        {
+          type: "application",
+          pattern: "src/domain/*/application/**/*.ts",
+          mode: "full",
+          capture: ["context"],
+        },
+        { type: "presentation", pattern: "src/http/**/*.ts", mode: "full" },
+        {
+          type: "infrastructure",
+          pattern: ["src/lib/**/*.ts", "src/env/**/*.ts"],
+          mode: "full",
+        },
       ],
-    } satisfies Settings,
+    } satisfies Settings & Record<string, unknown>,
   } satisfies Config,
   {
     files: ["**/*.json"],

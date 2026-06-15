@@ -23,6 +23,7 @@
     "@eslint/markdown": "8.0.2",
     "@types/node": "25.9.3",
     "eslint": "10.5.0",
+    "eslint-import-resolver-typescript": "4.4.5",
     "eslint-plugin-boundaries": "6.0.2",
     "globals": "17.6.0",
     "prisma": "6.19.3",
