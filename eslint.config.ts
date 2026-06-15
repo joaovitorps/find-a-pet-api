@@ -46,7 +46,12 @@ const boundariesSettings = {
     { type: "presentation", pattern: "src/http/**/*.ts", mode: "full" },
     {
       type: "infrastructure",
-      pattern: ["src/lib/**/*.ts", "src/env/**/*.ts"],
+      pattern: ["src/lib/**/*.ts", "src/env/**/*.ts", "src/infra/**/*.ts"],
+      mode: "full",
+    },
+    {
+      type: "composition",
+      pattern: ["src/app.ts", "src/server.ts"],
       mode: "full",
     },
   ],
@@ -148,6 +153,7 @@ export default defineConfig([
             {
               from: { type: "presentation" },
               allow: [
+                { to: { type: "presentation" } },
                 { to: { type: "application" } },
                 { to: { type: "enterprise" } },
                 { to: { type: "core" } },
@@ -173,10 +179,23 @@ export default defineConfig([
                 { to: { type: "enterprise" } },
                 { to: { type: "core" } },
                 { to: { type: "types" } },
+                { to: { type: "composition" } },
                 { to: { type: "infrastructure" } },
                 { to: { type: "presentation" } },
                 { to: { type: "test" } },
                 { to: { type: "generated-prisma" } },
+              ],
+            },
+            {
+              from: { type: "composition" },
+              allow: [
+                { to: { type: "composition" } },
+                { to: { type: "presentation" } },
+                { to: { type: "infrastructure" } },
+                { to: { type: "application" } },
+                { to: { type: "enterprise" } },
+                { to: { type: "core" } },
+                { to: { type: "types" } },
               ],
             },
           ],
