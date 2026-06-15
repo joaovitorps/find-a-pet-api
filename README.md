@@ -16,7 +16,7 @@
 
 ## Tasks
 
-- [ ] Route to register an ORG, ensuring it includes address and WhatsApp number
+- [x] Route to register an ORG, ensuring it includes address and WhatsApp number
 - [ ] Login route for an ORG
 - [ ] Route to register a pet, ensuring it is associated with an ORG
 - [ ] Route to list pets, requiring the city as a mandatory parameter

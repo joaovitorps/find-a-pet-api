@@ -23,12 +23,6 @@ export async function setupE2E() {
 
   const db = createPrismaClient(databaseUrl);
   // await runMigrations(databaseUrl);
-  //
-  //
-
-  //
-  //
-  //
 
   console.log(`[Test Environment] Using schema: ${process.env.DATABASE_URL}`);
 
