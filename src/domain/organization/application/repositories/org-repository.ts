@@ -1,5 +1,7 @@
-import type { Organization } from "../../enterprise/entities/organization";
+import type { Org } from "@/generated/prisma/client";
+import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 
 export interface OrgRepository {
-  create(data: Organization): Promise<void>;
+  findByNameAndPhone(name: string, phone: string): Promise<Org | null>;
+  create(data: OrgUncheckedCreateInput): Promise<void>;
 }

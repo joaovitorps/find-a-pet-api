@@ -1,9 +1,8 @@
 import type { Optional } from "@/@types/optional";
 import { Entity } from "@/core/entities/entity";
 import type { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import { isValidPhone } from "@/utils/phone-utils";
-import type { Address } from "../../application/use-cases/value-objects/address";
-import { Phone } from "../../application/use-cases/value-objects/phone";
+import type { Address } from "../value-objects/address";
+import { Phone } from "../value-objects/phone";
 
 export interface OrganizationProps {
   name: string;
@@ -32,14 +31,6 @@ export class Organization extends Entity<OrganizationProps> {
 
   get updatedAt() {
     return this.props.updatedAt;
-  }
-
-  set phone(phone: string) {
-    if (!isValidPhone(phone)) {
-      throw new Error("Invalid phone number.");
-    }
-
-    this.phone = phone;
   }
 
   // private touch() {

@@ -1,7 +1,8 @@
+import { ResourceAlreadyExists } from "@/core/errors/resource-already-exists-error";
 import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
 import { Organization } from "../../enterprise/entities/organization";
-import { Address } from "./value-objects/address";
-import { Phone } from "./value-objects/phone";
+import { Address } from "../../enterprise/value-objects/address";
+import { Phone } from "../../enterprise/value-objects/phone";
 
 interface CreateOrgUseCaseParams {
   name: string;
@@ -28,6 +29,10 @@ export class CreateOrgUseCase {
     address,
     phone,
   }: CreateOrgUseCaseParams): Promise<CreateOrgUseCaseReturn> {
+    if (await this.orgRepository.findByNameAndPhone(name, phone)) {
+      throw new ResourceAlreadyExists();
+    }
+
     const createdAddress = Address.create({ ...address });
 
     const organization = Organization.create({
@@ -36,7 +41,11 @@ export class CreateOrgUseCase {
       phone: Phone.create(phone),
     });
 
-    await this.orgRepository.create(organization);
+    await this.orgRepository.create({
+      name: organization.name,
+      phone: organization.phone,
+      address: organization.address.toString(),
+    });
 
     return { organization };
   }
