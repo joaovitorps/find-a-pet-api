@@ -12,4 +12,6 @@ model Org {
   name    String
   address String
   phone   String
+
+  @@unique([name, phone])
 }
