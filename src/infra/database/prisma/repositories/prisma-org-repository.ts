@@ -8,9 +8,9 @@ export class PrismaOrgRepository implements OrgRepository {
 
   constructor(private db: PrismaClient = prisma) {}
 
-  async findByNameAndPhone(name: string, phone: string) {
+  async findByEmail(email: string) {
     return await this.db.org.findFirst({
-      where: { name, phone },
+      where: { email },
     });
   }
 

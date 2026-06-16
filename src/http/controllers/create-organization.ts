@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { ResourceAlreadyExists } from "@/core/errors/resource-already-exists-error";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists-error";
 import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
 import { CreateOrgUseCase } from "@/domain/organization/application/use-cases/create-org";
 import { Phone } from "@/domain/organization/enterprise/value-objects/phone";
@@ -35,7 +35,7 @@ export const createOrganizationController = (orgRepo: OrgRepository) => {
         address,
       });
     } catch (error) {
-      if (error instanceof ResourceAlreadyExists) {
+      if (error instanceof ResourceAlreadyExistsError) {
         return reply.code(409).send();
       }
 

@@ -6,10 +6,8 @@ import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 export class InMemoryOrgRepository implements OrgRepository {
   orgs: Org[] = [];
 
-  async findByNameAndPhone(name: string, phone: string) {
-    const org = this.orgs.find(
-      (org) => org.name === name && org.phone === phone,
-    );
+  async findByEmail(email: string) {
+    const org = this.orgs.find((org) => org.email === email);
 
     if (!org) {
       return null;

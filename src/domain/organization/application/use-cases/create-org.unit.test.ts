@@ -1,5 +1,7 @@
+import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { InvalidPhoneError } from "@/core/errors/invalid-phone-error";
+import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists-error";
 import { CreateOrgUseCase } from "@/domain/organization/application/use-cases/create-org";
 import { makeOrg } from "@/test/factories/make-org";
 import { InMemoryOrgRepository } from "@/test/repositories/in-memory-org-repository";
@@ -31,6 +33,7 @@ describe("Create Org Use Case", async () => {
     await expect(() =>
       sut.execute({ ...orgData, phone: "++5511987654321" }),
     ).rejects.toBeInstanceOf(InvalidPhoneError);
+
     await expect(() =>
       sut.execute({ ...orgData, phone: "++5511987654321" }),
     ).rejects.toEqual(
@@ -45,10 +48,42 @@ describe("Create Org Use Case", async () => {
 
     await sut.execute(orgData1);
 
+    await expect(() => sut.execute(orgData2)).rejects.toBeInstanceOf(
+      ResourceAlreadyExistsError,
+    );
+
     await expect(() => sut.execute(orgData2)).rejects.toEqual(
-      expect.objectContaining({ message: "Resource already exists" }),
+      expect.objectContaining({ message: "Resource already exists." }),
     );
 
     expect(inMemoryOrgRepository.orgs).toHaveLength(1);
+  });
+
+  it("should be different from received password", async () => {
+    const { orgData } = makeOrg();
+
+    const { organization } = await sut.execute(orgData);
+
+    expect(orgData.password).not.toEqual(organization.password);
+  });
+
+  it("should be a valid bcrypt hash", async () => {
+    const { orgData } = makeOrg();
+
+    const { organization } = await sut.execute(orgData);
+
+    expect(organization.password.hash).toMatch(
+      /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/,
+    );
+  });
+
+  it("should match the hash", async () => {
+    const { orgData } = makeOrg();
+
+    const { organization } = await sut.execute(orgData);
+
+    expect(
+      await bcrypt.compare(orgData.password, organization.password.hash),
+    ).toBe(true);
   });
 });

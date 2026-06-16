@@ -3,12 +3,13 @@ import { Entity } from "@/core/entities/entity";
 import type { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 import type { Address } from "../value-objects/address";
+import type { Password } from "../value-objects/password";
 import { Phone } from "../value-objects/phone";
 
 export interface OrganizationProps {
   name: string;
   email: string;
-  password: string;
+  password: Password;
   ownerName: string;
   address: Address;
   phone: Phone;
@@ -58,7 +59,7 @@ export class Organization extends Entity<OrganizationProps> {
       id: this.id.toString(),
       name: this.name,
       email: this.email,
-      password: this.password,
+      password: this.password.hash,
       ownerName: this.ownerName,
       address: this.address.toString(),
       phone: this.phone,
