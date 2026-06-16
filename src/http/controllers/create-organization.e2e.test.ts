@@ -1,3 +1,4 @@
+import { makeOrg } from "@/test/factories/make-org";
 import { setupE2E } from "@/test/setup-e2e";
 
 describe("POST /api/organization", async () => {
@@ -16,50 +17,51 @@ describe("POST /api/organization", async () => {
   });
 
   it("should create a organization", async () => {
-    const orgData = {
-      name: "Animals Org",
-      address: {
-        number: "123",
-        street: "Old Street",
-        neighborhood: "Centro",
-        city: "São Paulo",
-        state: "SP",
-      },
-      phone: "+5511987654321",
-    };
+    const { newOrg } = makeOrg();
 
     const response = await ctx.app.inject({
       method: "POST",
       url: "/api/organization",
-      body: orgData,
+      body: {
+        name: newOrg.name,
+        email: newOrg.email,
+        password: newOrg.password,
+        ownerName: newOrg.ownerName,
+        address: newOrg.address,
+        phone: newOrg.phone,
+      },
     });
 
     expect(response.statusCode).toEqual(201);
   });
 
   it("should return 409 if org already exists", async () => {
-    const orgData = {
-      name: "Animals Org",
-      address: {
-        number: "123",
-        street: "Old Street",
-        neighborhood: "Centro",
-        city: "São Paulo",
-        state: "SP",
-      },
-      phone: "+5511987654321",
-    };
+    const { newOrg } = makeOrg();
 
     await ctx.app.inject({
       method: "POST",
       url: "/api/organization",
-      body: orgData,
+      body: {
+        name: newOrg.name,
+        email: newOrg.email,
+        password: newOrg.password,
+        ownerName: newOrg.ownerName,
+        address: newOrg.address,
+        phone: newOrg.phone,
+      },
     });
 
     const response = await ctx.app.inject({
       method: "POST",
       url: "/api/organization",
-      body: orgData,
+      body: {
+        name: newOrg.name,
+        email: newOrg.email,
+        password: newOrg.password,
+        ownerName: newOrg.ownerName,
+        address: newOrg.address,
+        phone: newOrg.phone,
+      },
     });
 
     expect(response.statusCode).toEqual(409);

@@ -8,10 +8,11 @@ datasource db {
 }
 
 model Org {
-  id      String @id @default(uuid())
-  name    String
-  address String
-  phone   String
-
-  @@unique([name, phone])
+  id        String @id @default(uuid())
+  email     String @unique
+  password  String
+  ownerName String
+  name      String
+  phone     String
+  address   String
 }

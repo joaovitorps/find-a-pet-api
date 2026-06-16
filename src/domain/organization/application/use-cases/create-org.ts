@@ -4,8 +4,11 @@ import { Organization } from "../../enterprise/entities/organization";
 import { Address } from "../../enterprise/value-objects/address";
 import { Phone } from "../../enterprise/value-objects/phone";
 
-interface CreateOrgUseCaseParams {
+export interface CreateOrgUseCaseParams {
   name: string;
+  email: string;
+  password: string;
+  ownerName: string;
   phone: string;
   address: {
     number: string;
@@ -26,6 +29,9 @@ export class CreateOrgUseCase {
 
   async execute({
     name,
+    email,
+    password,
+    ownerName,
     address,
     phone,
   }: CreateOrgUseCaseParams): Promise<CreateOrgUseCaseReturn> {
@@ -37,15 +43,14 @@ export class CreateOrgUseCase {
 
     const organization = Organization.create({
       name,
+      email,
+      password,
+      ownerName,
       address: createdAddress,
       phone: Phone.create(phone),
     });
 
-    await this.orgRepository.create({
-      name: organization.name,
-      phone: organization.phone,
-      address: organization.address.toString(),
-    });
+    await this.orgRepository.create(organization.toDBCreateDTO());
 
     return { organization };
   }

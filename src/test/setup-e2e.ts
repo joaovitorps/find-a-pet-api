@@ -1,6 +1,7 @@
 import { execSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { build } from "@/app";
+import type { PrismaClient } from "@/generated/prisma/client";
 import { createPrismaClient } from "@/infra/database/prisma/create-prisma-client";
 import { PrismaOrgRepository } from "@/infra/database/prisma/repositories/prisma-org-repository";
 
@@ -11,26 +12,23 @@ const makeDatabaseUrl = (schema: string) => {
 
   const dbUrl = new URL(process.env.DATABASE_URL);
   dbUrl.searchParams.set("schema", schema);
+  const stringDbUrl = dbUrl.toString();
 
-  // vi.stubEnv("DATABASE_URL", databaseUrl);
+  vi.stubEnv("DATABASE_URL", stringDbUrl);
 
-  return dbUrl.toString();
+  return stringDbUrl;
 };
 
-export async function setupE2E() {
-  const schema = randomUUID();
-  const databaseUrl = makeDatabaseUrl(schema);
+const runMigrations = (databaseUrl: string) => {
+  console.log(`[Test Environment] Using schema: ${databaseUrl}`);
 
-  const db = createPrismaClient(databaseUrl);
-  // await runMigrations(databaseUrl);
-
-  console.log(`[Test Environment] Using schema: ${process.env.DATABASE_URL}`);
-
-  execSync("npx prisma migrate dev", {
+  execSync("npx prisma migrate deploy", {
     cwd: process.cwd(),
     stdio: "inherit",
   });
+};
 
+const createApp = async (db: PrismaClient) => {
   const app = build(
     {},
     {
@@ -39,6 +37,18 @@ export async function setupE2E() {
   );
 
   await app.ready();
+
+  return app;
+};
+
+export async function setupE2E() {
+  const schema = randomUUID();
+  const databaseUrl = makeDatabaseUrl(schema);
+
+  const db = createPrismaClient(databaseUrl);
+  runMigrations(databaseUrl);
+
+  const app = await createApp(db);
 
   return {
     app,

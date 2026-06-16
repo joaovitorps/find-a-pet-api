@@ -21,6 +21,9 @@ export class InMemoryOrgRepository implements OrgRepository {
   async create(data: OrgUncheckedCreateInput) {
     const org: Org = {
       id: data.id ?? randomUUID(),
+      email: data.email,
+      password: data.password,
+      ownerName: data.ownerName,
       name: data.name,
       phone: data.phone,
       address: data.address,

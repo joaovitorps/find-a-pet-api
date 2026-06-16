@@ -3,10 +3,14 @@ import { z } from "zod";
 import { ResourceAlreadyExists } from "@/core/errors/resource-already-exists-error";
 import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
 import { CreateOrgUseCase } from "@/domain/organization/application/use-cases/create-org";
+import { Phone } from "@/domain/organization/enterprise/value-objects/phone";
 
 const RequestBodySchema = z.object({
   name: z.string(),
-  phone: z.stringFormat("phone", /^\+55[1-9]{2}(?:[2-8]\d{7}|9\d{8})$/),
+  email: z.email(),
+  password: z.string(),
+  ownerName: z.string(),
+  phone: z.stringFormat("phone", Phone.validationRegex),
   address: z.object({
     number: z.string(),
     street: z.string(),
@@ -18,10 +22,18 @@ const RequestBodySchema = z.object({
 
 export const createOrganizationController = (orgRepo: OrgRepository) => {
   return async (req: FastifyRequest, reply: FastifyReply) => {
-    const { name, phone, address } = RequestBodySchema.parse(req.body);
+    const { name, email, password, ownerName, phone, address } =
+      RequestBodySchema.parse(req.body);
 
     try {
-      await new CreateOrgUseCase(orgRepo).execute({ name, phone, address });
+      await new CreateOrgUseCase(orgRepo).execute({
+        name,
+        email,
+        password,
+        ownerName,
+        phone,
+        address,
+      });
     } catch (error) {
       if (error instanceof ResourceAlreadyExists) {
         return reply.code(409).send();

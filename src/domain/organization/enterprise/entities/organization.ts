@@ -1,11 +1,15 @@
 import type { Optional } from "@/@types/optional";
 import { Entity } from "@/core/entities/entity";
 import type { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 import type { Address } from "../value-objects/address";
 import { Phone } from "../value-objects/phone";
 
 export interface OrganizationProps {
   name: string;
+  email: string;
+  password: string;
+  ownerName: string;
   address: Address;
   phone: Phone;
   createdAt: Date;
@@ -15,6 +19,18 @@ export interface OrganizationProps {
 export class Organization extends Entity<OrganizationProps> {
   get name() {
     return this.props.name;
+  }
+
+  get email() {
+    return this.props.email;
+  }
+
+  get password() {
+    return this.props.password;
+  }
+
+  get ownerName() {
+    return this.props.ownerName;
   }
 
   get address() {
@@ -36,6 +52,18 @@ export class Organization extends Entity<OrganizationProps> {
   // private touch() {
   //   this.props.updatedAt = new Date();
   // }
+
+  toDBCreateDTO(): OrgUncheckedCreateInput {
+    return {
+      id: this.id.toString(),
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      ownerName: this.ownerName,
+      address: this.address.toString(),
+      phone: this.phone,
+    };
+  }
 
   static create(
     props: Optional<OrganizationProps, "createdAt">,
