@@ -42,7 +42,7 @@ export class CreateOrgUseCase {
 
     const createdAddress = Address.create({ ...address });
 
-    const passHashed = await Password.create({ password });
+    const passHashed = await Password.create(password);
 
     const organization = Organization.create({
       name,

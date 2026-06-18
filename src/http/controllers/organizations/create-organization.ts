@@ -1,6 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists-error";
 import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
 import { CreateOrgUseCase } from "@/domain/organization/application/use-cases/create-org";
 import { Phone } from "@/domain/organization/enterprise/value-objects/phone";
@@ -25,22 +24,14 @@ export const createOrganizationController = (orgRepo: OrgRepository) => {
     const { name, email, password, ownerName, phone, address } =
       RequestBodySchema.parse(req.body);
 
-    try {
-      await new CreateOrgUseCase(orgRepo).execute({
-        name,
-        email,
-        password,
-        ownerName,
-        phone,
-        address,
-      });
-    } catch (error) {
-      if (error instanceof ResourceAlreadyExistsError) {
-        return reply.code(409).send();
-      }
-
-      throw error;
-    }
+    await new CreateOrgUseCase(orgRepo).execute({
+      name,
+      email,
+      password,
+      ownerName,
+      phone,
+      address,
+    });
 
     return reply.code(201).send({ success: true });
   };

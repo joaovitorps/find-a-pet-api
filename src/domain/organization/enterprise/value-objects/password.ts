@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
+import z from "zod";
+import { InvalidPasswordError } from "@/core/errors/invalid-password-error";
 
 export class Password {
-  constructor(public readonly hash: string) {}
+  private constructor(public readonly hash: string) {}
 
   private static async encryptPassword(password: string) {
     const saltRounds = 10;
@@ -10,13 +12,26 @@ export class Password {
     return hash;
   }
 
-  public async checkPasswordMatch(password: string, hash: string) {
-    const isMatch = await bcrypt.compare(password, hash);
+  public static validate(password: string) {
+    // set as max as per bcrypts docs: `The maximum input length is 72 bytes` (https://www.npmjs.com/package/bcryptjs)
+    const PasswordSchema = z
+      .string()
+      .min(8)
+      .max(72)
+      .refine((val) => (val.match(/[A-Z]/g) || []).length >= 1, {
+        message: "Must contain at least 1 uppercase letters",
+      });
 
-    return isMatch;
+    const result = PasswordSchema.safeParse(password);
+
+    if (!result.success) {
+      throw new InvalidPasswordError({ cause: result.error.message });
+    }
   }
 
-  static async create({ password }: { password: string }) {
+  static async create(password: string) {
+    Password.validate(password);
+
     const hash = await Password.encryptPassword(password);
 
     return new Password(hash);

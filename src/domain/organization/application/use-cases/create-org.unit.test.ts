@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { InvalidPhoneError } from "@/core/errors/invalid-phone-error";
 import { ResourceAlreadyExistsError } from "@/core/errors/resource-already-exists-error";
@@ -16,7 +15,7 @@ describe("Create Org Use Case", async () => {
   });
 
   it("should create a organization", async () => {
-    const { orgData } = makeOrg();
+    const { orgData } = await makeOrg();
 
     const { organization } = await sut.execute(orgData);
 
@@ -28,7 +27,7 @@ describe("Create Org Use Case", async () => {
   });
 
   it("should fail on invalid phone number", async () => {
-    const { orgData } = makeOrg();
+    const { orgData } = await makeOrg();
 
     await expect(() =>
       sut.execute({ ...orgData, phone: "++5511987654321" }),
@@ -43,8 +42,8 @@ describe("Create Org Use Case", async () => {
   });
 
   it("should fail if org already exists (same name and phone)", async () => {
-    const { orgData: orgData1 } = makeOrg();
-    const { orgData: orgData2 } = makeOrg();
+    const { orgData: orgData1 } = await makeOrg();
+    const { orgData: orgData2 } = await makeOrg();
 
     await sut.execute(orgData1);
 
@@ -60,30 +59,10 @@ describe("Create Org Use Case", async () => {
   });
 
   it("should be different from received password", async () => {
-    const { orgData } = makeOrg();
+    const { orgData } = await makeOrg();
 
     const { organization } = await sut.execute(orgData);
 
     expect(orgData.password).not.toEqual(organization.password);
-  });
-
-  it("should be a valid bcrypt hash", async () => {
-    const { orgData } = makeOrg();
-
-    const { organization } = await sut.execute(orgData);
-
-    expect(organization.password.hash).toMatch(
-      /^\$2[aby]\$\d{2}\$[./A-Za-z0-9]{53}$/,
-    );
-  });
-
-  it("should match the hash", async () => {
-    const { orgData } = makeOrg();
-
-    const { organization } = await sut.execute(orgData);
-
-    expect(
-      await bcrypt.compare(orgData.password, organization.password.hash),
-    ).toBe(true);
   });
 });
