@@ -24,25 +24,30 @@
   - [x] use case login
   - [x] crete test for controller
   - [x] create controller
-- [ ] Route to register a pet, ensuring it is associated with an ORG
-  - [ ] add req.org.id if authenticated correctly
-  - [ ] unit.test for create-pet use case
-  - [ ] create-pet use case
-  - [ ] create POST `/pet` route protected by jwt middleware inside the controller
-  - [ ] verify if params are correctly:
-    - [ ] `org_id` will come from req.org
-    - [ ] `name` string
-    - [ ] `about` string
-    - [ ] `age` number
-    - [ ] `size` string
-    - [ ] `energy level` string
-    - [ ] `independency level` string
-    - [ ] `environment` string
-    - [ ] `pictures`\*
-    - [ ] `adoption_requirements` string[]
-  - [ ] must return 201
-  - [ ] create e2e.test
+- [x] Route to register a pet, ensuring it is associated with an ORG
+  - [x] add req.org.id if authenticated correctly
+  - [x] create pet table
+  - [x] create pet entity
+  - [x] create repository for pet
+  - [x] unit.test for create-pet use case
+  - [x] create-pet use case
+  - [x] create POST `/pet` route protected by jwt middleware inside the controller
+  - [x] verify if params are correctly:
+    - [x] `org_id` will come from req.org
+    - [x] `name` string
+    - [x] `about` string
+    - [x] `age` number
+    - [x] `size` string
+    - [x] `energy level` string
+    - [x] `independency level` string
+    - [x] `environment` string
+    - [x] `pictures`\*
+    - [x] `adoption_requirements` string[]
+  - [x] must return 201
+  - [x] create e2e.test
 - [ ] Route to list pets, requiring the city as a mandatory parameter
+- [ ] Route to publish pet
+  - [ ] if (pet.pictures.length === 0) throw "needs at least one photo"`. | same for adoption req
 - [ ] Implement optional filter functionality by pet characteristics in the listing
 - [ ] Route to view the details of a specific pet
 - [ ] Ensure that the ORG’s admin access is restricted to logged-in users

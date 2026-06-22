@@ -4,15 +4,20 @@ import { type FastifyServerOptions, fastify } from "fastify";
 import { z } from "zod";
 import { InvalidCredentialsError } from "./core/errors/invalid-credentials";
 import { ResourceAlreadyExistsError } from "./core/errors/resource-already-exists-error";
+import { ResourceNotFoundError } from "./core/errors/resource-not-found";
 import type { OrgRepository } from "./domain/organization/application/repositories/org-repository";
+import type { PetRepository } from "./domain/pet/application/repositories/pet-repository";
 import { env } from "./env";
 import { organizationRoutes } from "./http/controllers/organizations/routes";
+import { petRoutes } from "./http/controllers/pets/routes";
 import { PrismaOrgRepository } from "./infra/database/prisma/repositories/prisma-org-repository";
+import { PrismaPetRepository } from "./infra/database/prisma/repositories/prisma-pet-repository";
 
 export function build(
   opts: FastifyServerOptions = {},
   deps?: {
     orgRepository?: OrgRepository;
+    petRepository?: PetRepository;
   },
 ) {
   const app = fastify(opts);
@@ -30,6 +35,10 @@ export function build(
       return reply.code(409).send();
     }
 
+    if (error instanceof ResourceNotFoundError) {
+      return reply.code(404).send();
+    }
+
     console.error(error);
 
     return reply.status(500).send(new Error("Unexpected error happened."));
@@ -45,8 +54,10 @@ export function build(
   app.register(fastifyCookie);
 
   const orgRepository = deps?.orgRepository ?? new PrismaOrgRepository();
+  const petRepository = deps?.petRepository ?? new PrismaPetRepository();
 
   app.register(organizationRoutes, { orgRepository });
+  app.register(petRoutes, { orgRepository, petRepository });
 
   return app;
 }

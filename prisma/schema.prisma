@@ -15,4 +15,61 @@ model Org {
   name      String
   phone     String
   address   String
+
+  pets Pet[]
+}
+
+enum Status {
+  DRAFT
+  PUBLISHED
+}
+
+enum Age {
+  FILHOTE
+  ADULTO
+  IDOSO
+}
+
+enum Size {
+  PEQUENO
+  MEDIO
+  GRANDE
+}
+
+enum EnergyLevel {
+  BAIXO
+  MEDIO
+  ALTO
+}
+
+enum IndependencyLevel {
+  BAIXO
+  MEDIO
+  ALTO
+}
+
+enum Environment {
+  AMBIENTE_AMPLO
+  APARTAMENTO
+  AMBIENTE_CONTROLADO
+  AR_LIVRE
+}
+
+model Pet {
+  id                   String            @id @default(uuid())
+  orgId                String            @map("org_id")
+  status               Status
+  name                 String
+  about                String?
+  age                  Age
+  size                 Size
+  energyLevel          EnergyLevel       @map("energy_level")
+  independencyLevel    IndependencyLevel @map("independency_level")
+  environment          Environment
+  pictures             String[]          @default([])
+  adoptionRequirements String[]          @default([]) @map("adoption_requirements")
+  createdAt            DateTime          @default(now()) @map("created_at")
+  updatedAt            DateTime          @updatedAt @map("updated_at")
+
+  org Org @relation(fields: [orgId], references: [id])
 }

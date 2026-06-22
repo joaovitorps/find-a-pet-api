@@ -127,7 +127,6 @@ export default defineConfig([
                 },
                 { to: { type: "core" } },
                 { to: { type: "types" } },
-                { to: { type: "generated-prisma" } },
               ],
             },
             {
@@ -147,7 +146,6 @@ export default defineConfig([
                 },
                 { to: { type: "core" } },
                 { to: { type: "types" } },
-                { to: { type: "generated-prisma" } },
               ],
             },
             {

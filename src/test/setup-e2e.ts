@@ -60,6 +60,7 @@ export async function setupE2E() {
       await db.$disconnect();
     },
     async reset() {
+      await db.pet.deleteMany();
       await db.org.deleteMany();
     },
   };
