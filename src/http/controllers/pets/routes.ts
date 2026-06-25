@@ -3,6 +3,7 @@ import type { OrgRepository } from "@/domain/organization/application/repositori
 import type { PetRepository } from "@/domain/pet/application/repositories/pet-repository";
 import { verifyJWT } from "@/http/middlewares/jwt";
 import { createPetController } from "./create-pet";
+import { fetchPetController } from "./fetch-pet";
 
 export const petRoutes = (
   app: FastifyInstance,
@@ -14,4 +15,5 @@ export const petRoutes = (
     `/organizations/:orgId/pets`,
     createPetController(opts.orgRepository, opts.petRepository),
   );
+  app.get(`/pets`, fetchPetController(opts.petRepository));
 };

@@ -1,13 +1,14 @@
 import { randomUUID } from "node:crypto";
 import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
+import type { Organization } from "@/domain/organization/enterprise/entities/organization";
 import type { Org } from "@/generated/prisma/client";
 import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 
 export class InMemoryOrgRepository implements OrgRepository {
-  orgs: Org[] = [];
+  orgs: Organization[] = [];
 
   async findById(id: string) {
-    const org = this.orgs.find((org) => org.id === id);
+    const org = this.orgs.find((org) => org.id.toString() === id);
 
     if (!org) {
       return null;
@@ -24,6 +25,10 @@ export class InMemoryOrgRepository implements OrgRepository {
     }
 
     return org;
+  }
+
+  async fetchByCity(city: string) {
+    return this.orgs.filter((org) => org.address.city === city);
   }
 
   async create(data: OrgUncheckedCreateInput) {

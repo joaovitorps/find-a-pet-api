@@ -45,7 +45,12 @@
     - [x] `adoption_requirements` string[]
   - [x] must return 201
   - [x] create e2e.test
-- [ ] Route to list pets, requiring the city as a mandatory parameter
+- [x] Route to list pets, requiring the city as a mandatory parameter
+  - [x] fetchPet use case test
+  - [x] fetchPet use case
+  - [x] GET `/pets` e2e test
+    - [x] return 400 if city is not passed
+  - [x] GET `/pets`
 - [ ] Route to publish pet
   - [ ] if (pet.pictures.length === 0) throw "needs at least one photo"`. | same for adoption req
 - [ ] Implement optional filter functionality by pet characteristics in the listing

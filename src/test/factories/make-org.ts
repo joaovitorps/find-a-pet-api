@@ -18,7 +18,7 @@ export async function makeOrg(
       number: "123",
       street: "Old Street",
       neighborhood: "Centro",
-      city: "Sao Paulo",
+      city: "Sao paulo",
       state: "SP",
     },
     phone: "+5511987654321",
