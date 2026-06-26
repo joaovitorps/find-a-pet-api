@@ -51,8 +51,10 @@
   - [x] GET `/pets` e2e test
     - [x] return 400 if city is not passed
   - [x] GET `/pets`
-- [ ] Route to publish pet
-  - [ ] if (pet.pictures.length === 0) throw "needs at least one photo"`. | same for adoption req
+- [x] Route to publish pet
+  - [x] create unit test and use-case
+  - [x] if (pet.pictures.length === 0) throw "needs at least one photo"`. | same for adoption req
+  - [x] create e2e test and PATCH route: `/pets/:petId/publish`
 - [ ] Implement optional filter functionality by pet characteristics in the listing
 - [ ] Route to view the details of a specific pet
 - [ ] Ensure that the ORG’s admin access is restricted to logged-in users

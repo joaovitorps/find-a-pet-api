@@ -107,9 +107,14 @@ export class Pet extends Entity<PetProps> {
     return this.props.updatedAt;
   }
 
-  // private touch() {
-  //   this.props.updatedAt = new Date();
-  // }
+  set status(status: Status) {
+    this.props.status = status;
+    this.touch();
+  }
+
+  private touch() {
+    this.props.updatedAt = new Date();
+  }
 
   static create(props: Optional<PetProps, "createdAt">, id?: UniqueEntityID) {
     return new Pet(

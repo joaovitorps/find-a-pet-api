@@ -4,6 +4,7 @@ import { build } from "@/app";
 import type { PrismaClient } from "@/generated/prisma/client";
 import { createPrismaClient } from "@/infra/database/prisma/create-prisma-client";
 import { PrismaOrgRepository } from "@/infra/database/prisma/repositories/prisma-org-repository";
+import { PrismaPetRepository } from "@/infra/database/prisma/repositories/prisma-pet-repository";
 
 const makeDatabaseUrl = (schema: string) => {
   if (!process.env.DATABASE_URL) {
@@ -33,6 +34,7 @@ const createApp = async (db: PrismaClient) => {
     {},
     {
       orgRepository: new PrismaOrgRepository(db),
+      petRepository: new PrismaPetRepository(db)
     },
   );
 
