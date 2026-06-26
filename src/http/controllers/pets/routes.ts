@@ -4,6 +4,7 @@ import type { PetRepository } from "@/domain/pet/application/repositories/pet-re
 import { verifyJWT } from "@/http/middlewares/jwt";
 import { createPetController } from "./create-pet";
 import { fetchPetController } from "./fetch-pet";
+import { publishPetController } from "./publish-pet";
 
 export const petRoutes = (
   app: FastifyInstance,
@@ -16,4 +17,5 @@ export const petRoutes = (
     createPetController(opts.orgRepository, opts.petRepository),
   );
   app.get(`/pets`, fetchPetController(opts.petRepository));
+  app.patch(`/pets/:petId/publish`, publishPetController(opts.petRepository));
 };

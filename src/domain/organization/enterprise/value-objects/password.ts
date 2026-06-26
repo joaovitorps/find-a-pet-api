@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import z from "zod";
-import { InvalidPasswordError } from "@/core/errors/invalid-password-error";
+import { ValidationError } from "@/core/errors/validation-error";
 
 export class Password {
   private constructor(public readonly hash: string) {}
@@ -25,7 +25,7 @@ export class Password {
     const result = PasswordSchema.safeParse(password);
 
     if (!result.success) {
-      throw new InvalidPasswordError({ cause: result.error.message });
+      throw new ValidationError({ cause: result.error.message });
     }
   }
 

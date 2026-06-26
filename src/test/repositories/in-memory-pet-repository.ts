@@ -7,6 +7,16 @@ export class InMemoryPetRepository implements PetRepository {
   pets: Pet[] = [];
   orgs: Organization[] = [];
 
+  async fetchById(id: string) {
+    const pet = this.pets.find((pet) => pet.id.toString() === id);
+
+    if (!pet) {
+      return null;
+    }
+
+    return pet;
+  }
+
   async fetchByCity(city: string) {
     const orgsOfCity = new Set(
       this.orgs
@@ -19,5 +29,11 @@ export class InMemoryPetRepository implements PetRepository {
 
   async create(pet: Pet) {
     this.pets.push(pet);
+  }
+
+  async save(data: Pet): Promise<void> {
+    const petIndex = this.pets.findIndex((pet) => pet.id === data.id);
+
+    this.pets.splice(petIndex, 1, data);
   }
 }

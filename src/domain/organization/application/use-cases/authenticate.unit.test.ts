@@ -1,7 +1,6 @@
 import { InvalidCredentialsError } from "@/core/errors/invalid-credentials";
 import { makeOrg } from "@/test/factories/make-org";
 import { InMemoryOrgRepository } from "@/test/repositories/in-memory-org-repository";
-import { Organization } from "../../enterprise/entities/organization";
 import { AuthenticateUseCase } from "./authenticate";
 
 let inMemoryOrgRepository: InMemoryOrgRepository;

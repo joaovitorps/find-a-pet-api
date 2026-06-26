@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { InvalidPasswordError } from "@/core/errors/invalid-password-error";
+import { ValidationError } from "@/core/errors/validation-error";
 import { Password } from "./password";
 
 describe("Password Value Object", async () => {
@@ -17,7 +17,7 @@ describe("Password Value Object", async () => {
 
   it("should fail if less than 8 char", async () => {
     await expect(Password.create("Test")).rejects.toBeInstanceOf(
-      InvalidPasswordError,
+      ValidationError,
     );
   });
 });
