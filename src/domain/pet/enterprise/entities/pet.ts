@@ -116,11 +116,33 @@ export class Pet extends Entity<PetProps> {
     this.props.updatedAt = new Date();
   }
 
+  toJSON() {
+    return {
+      id: this.id,
+      orgId: this.props.orgId,
+      name: this.props.name,
+      about: this.props.about,
+      status: this.props.status,
+      age: this.props.age,
+      size: this.props.size,
+      energyLevel: this.props.energyLevel,
+      independencyLevel: this.props.independencyLevel,
+      environment: this.props.environment,
+      pictures: this.props.pictures,
+      adoptionRequirements: this.props.adoptionRequirements,
+      createdAt: this.props.createdAt,
+      updatedAt: this.props.updatedAt,
+    };
+  }
+
   static create(props: Optional<PetProps, "createdAt">, id?: UniqueEntityID) {
+    const createdAt = props.createdAt ?? new Date();
+    
     return new Pet(
       {
         ...props,
-        createdAt: props.createdAt ?? new Date(),
+        createdAt: createdAt,
+        updatedAt: props.updatedAt ?? createdAt,
       },
       id,
     );

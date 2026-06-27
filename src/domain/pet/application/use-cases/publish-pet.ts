@@ -35,7 +35,7 @@ export class PublishPetUseCase {
   constructor(private petRepository: PetRepository) {}
 
   async execute({ id }: FetchPetUseCaseParams): Promise<void> {
-    const pet = await this.petRepository.fetchById(id);
+    const pet = await this.petRepository.getById(id);
 
     const eligibility = getPublishEligibility(pet);
 

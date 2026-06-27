@@ -3,6 +3,7 @@ import type { OrgRepository } from "@/domain/organization/application/repositori
 import type { PetRepository } from "@/domain/pet/application/repositories/pet-repository";
 import { verifyJWT } from "@/http/middlewares/jwt";
 import { createPetController } from "./create-pet";
+import { detailsController } from "./details";
 import { fetchPetController } from "./fetch-pet";
 import { publishPetController } from "./publish-pet";
 
@@ -18,4 +19,5 @@ export const petRoutes = (
   );
   app.get(`/pets`, fetchPetController(opts.petRepository));
   app.patch(`/pets/:petId/publish`, publishPetController(opts.petRepository));
+  app.get(`/pets/:petId`, detailsController(opts.petRepository));
 };

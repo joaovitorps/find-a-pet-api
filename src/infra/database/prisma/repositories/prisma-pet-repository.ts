@@ -20,7 +20,7 @@ export class PrismaPetRepository implements PetRepository {
 
   constructor(private db: PrismaClient = prisma) {}
 
-  async fetchById(id: string): Promise<Pet | null> {
+  async getById(id: string): Promise<Pet | null> {
     const pet = await this.db.pet.findFirst({
       where: { id },
     });

@@ -10,4 +10,8 @@ export class UniqueEntityID {
   toString() {
     return this.value;
   }
+
+  toJSON() {
+    return this.value;
+  }
 }
