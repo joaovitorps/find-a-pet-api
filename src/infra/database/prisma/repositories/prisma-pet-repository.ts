@@ -10,7 +10,8 @@ import {
   type Status,
 } from "@/domain/pet/enterprise/entities/pet";
 import type { PrismaClient } from "@/generated/prisma/client";
-import type { PetUncheckedUpdateInput } from "@/generated/prisma/models";
+import type { PetWhereInput } from "@/generated/prisma/models";
+import type { PetFilters } from "@/http/controllers/pets/fetch-pet";
 import { toCreateInput } from "@/infra/mappers/pet-mapper";
 import { prisma } from "@/lib/prisma";
 import { normalize } from "@/utils/string-normalize";
@@ -56,32 +57,42 @@ export class PrismaPetRepository implements PetRepository {
     });
   }
 
-  async fetchByCity(city: string): Promise<Pet[]> {
-    const [results] = await this.db.org.findMany({
-      select: {
-        pets: true,
+  async filter(city: string, filters?: PetFilters): Promise<Pet[]> {
+    const where: PetWhereInput = {
+      org: {
+        address: { contains: normalize(city), mode: "insensitive" },
       },
-      where: { address: { contains: normalize(city), mode: "insensitive" } },
-    });
+    };
 
-    if (!results) {
-      return [];
+    if (filters) {
+      const receivedFilters = Object.entries(filters).filter(
+        ([_, value]) => value !== undefined,
+      );
+
+      if (receivedFilters.length > 0) {
+        where.AND = receivedFilters.map(([key, value]) => ({ [key]: value }));
+      }
     }
 
-    return results.pets.map((pet) =>
-      Pet.create({
-        orgId: new UniqueEntityID(pet.orgId),
-        name: pet.name,
-        about: pet.about,
-        status: pet.status,
-        age: pet.age as Age,
-        size: pet.size as Size,
-        energyLevel: pet.energyLevel as EnergyLevel,
-        independencyLevel: pet.independencyLevel as IndependencyLevel,
-        environment: pet.environment as Environment,
-        pictures: pet.pictures,
-        adoptionRequirements: pet.adoptionRequirements,
-      }),
+    const pets = await this.db.pet.findMany({ where });
+
+    return pets.map((pet) =>
+      Pet.create(
+        {
+          orgId: new UniqueEntityID(pet.orgId),
+          name: pet.name,
+          about: pet.about,
+          status: pet.status as Status,
+          age: pet.age as Age,
+          size: pet.size as Size,
+          energyLevel: pet.energyLevel as EnergyLevel,
+          independencyLevel: pet.independencyLevel as IndependencyLevel,
+          environment: pet.environment as Environment,
+          pictures: pet.pictures,
+          adoptionRequirements: pet.adoptionRequirements,
+        },
+        new UniqueEntityID(pet.id),
+      ),
     );
   }
 

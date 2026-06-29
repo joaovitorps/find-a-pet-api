@@ -1,4 +1,5 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { Age } from "@/domain/pet/enterprise/entities/pet";
 import { makePet } from "@/test/factories/make-pet";
 import { setupE2E } from "@/test/setup-e2e";
 import { createAndAuthenticateOrg } from "@/test/utils/create-and-authenticate-org";
@@ -18,7 +19,7 @@ describe("POST /organizations/:orgId/pets", async () => {
     await ctx.cleanup();
   });
 
-  it("should fetch all pets if requested city", async () => {
+  it("should fetch all pets of requested city", async () => {
     const { token } = await createAndAuthenticateOrg(ctx.app);
 
     const dbOrg = await ctx.db.org.findFirstOrThrow();
@@ -50,7 +51,7 @@ describe("POST /organizations/:orgId/pets", async () => {
 
     const response = await ctx.app.inject({
       method: "GET",
-      url: `/pets?city=s%C3%A3o+Paulo`,
+      url: `/pets?city=s%C3%A3o+Paulo&age=FILHOTE`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -62,6 +63,53 @@ describe("POST /organizations/:orgId/pets", async () => {
 
     expect(data.pets).toBeDefined();
     expect(data.pets).toHaveLength(2);
+  });
+
+  it("should fetch all pets of requested city and filters", async () => {
+    const { token } = await createAndAuthenticateOrg(ctx.app);
+
+    const dbOrg = await ctx.db.org.findFirstOrThrow();
+
+    const { petParams: pet1 } = await makePet({
+      orgId: new UniqueEntityID(dbOrg.id),
+    });
+    const { petParams: pet2 } = await makePet({
+      orgId: new UniqueEntityID(dbOrg.id),
+      age: Age.ADULTO,
+    });
+
+    await ctx.app.inject({
+      method: "POST",
+      url: `/organizations/${dbOrg.id}/pets`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: pet1,
+    });
+
+    await ctx.app.inject({
+      method: "POST",
+      url: `/organizations/${dbOrg.id}/pets`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: pet2,
+    });
+
+    const response = await ctx.app.inject({
+      method: "GET",
+      url: `/pets?city=s%C3%A3o+Paulo&age=FILHOTE`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    expect(response.statusCode).toEqual(200);
+
+    const data = await response.json();
+
+    expect(data.pets).toBeDefined();
+    expect(data.pets).toHaveLength(1);
   });
 
   it("should return 400 no match for the requested city", async () => {

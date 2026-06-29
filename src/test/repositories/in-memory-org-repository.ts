@@ -27,10 +27,6 @@ export class InMemoryOrgRepository implements OrgRepository {
     return org;
   }
 
-  async fetchByCity(city: string) {
-    return this.orgs.filter((org) => org.address.city === city);
-  }
-
   async create(data: OrgUncheckedCreateInput) {
     const org: Org = {
       id: data.id ?? randomUUID(),

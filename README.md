@@ -55,12 +55,12 @@
   - [x] create unit test and use-case
   - [x] if (pet.pictures.length === 0) throw "needs at least one photo"`. | same for adoption req
   - [x] create e2e test and PATCH route: `/pets/:petId/publish`
-- [ ] Implement optional filter functionality by pet characteristics in the listing
+- [x] Implement optional filter functionality by pet characteristics in the listing
 - [x] Route to view the details of a specific pet
   - [x] unit test and pet-details use case
   - [x] e2e test / petDetails controller / `/pet/:petId` GET route
 - [ ] Ensure that the ORG’s admin access is restricted to logged-in users
-- [ ] Apply SOLID principles while developing the API structure
-- [ ] Create tests to validate the functionalities and business rules
+- [x] Apply SOLID principles while developing the API structure
+- [x] Create tests to validate the functionalities and business rules
 
 remember to includes a richer README.md with as much details as possible
