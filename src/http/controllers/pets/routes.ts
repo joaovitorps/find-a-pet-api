@@ -11,13 +11,17 @@ export const petRoutes = (
   app: FastifyInstance,
   opts: { orgRepository: OrgRepository; petRepository: PetRepository },
 ) => {
-  app.addHook("onRequest", verifyJWT);
+  app.get(`/pets`, fetchPetController(opts.petRepository));
+  app.get(`/pets/:petId`, detailsController(opts.petRepository));
 
   app.post(
     `/organizations/:orgId/pets`,
+    { onRequest: verifyJWT },
     createPetController(opts.orgRepository, opts.petRepository),
   );
-  app.get(`/pets`, fetchPetController(opts.petRepository));
-  app.patch(`/pets/:petId/publish`, publishPetController(opts.petRepository));
-  app.get(`/pets/:petId`, detailsController(opts.petRepository));
+  app.patch(
+    `/pets/:petId/publish`,
+    { onRequest: verifyJWT },
+    publishPetController(opts.orgRepository, opts.petRepository),
+  );
 };

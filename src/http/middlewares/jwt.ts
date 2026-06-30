@@ -4,6 +4,7 @@ import { InvalidCredentialsError } from "@/core/errors/invalid-credentials";
 export const verifyJWT = async (req: FastifyRequest) => {
   try {
     await req.jwtVerify();
+    req.org = { id: req.user.sub };
   } catch (_) {
     throw new InvalidCredentialsError();
   }

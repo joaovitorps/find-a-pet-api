@@ -17,11 +17,9 @@ export const authenticateController = (orgRepo: OrgRepository) => {
       password,
     });
 
-    const token = await reply.jwtSign(
-      {
-        sign: { sub: org.id },
-      },
-    );
+    const token = await reply.jwtSign({
+      sub: org.id,
+    });
 
     reply.setCookie("token", token, {
       path: "/",

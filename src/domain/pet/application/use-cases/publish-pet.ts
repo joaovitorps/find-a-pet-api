@@ -1,11 +1,14 @@
+import { InvalidCredentialsError } from "@/core/errors/invalid-credentials";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
 import { ValidationError } from "@/core/errors/validation-error";
+import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
+import type { Organization } from "@/domain/organization/enterprise/entities/organization";
 import { type Pet, Status } from "../../enterprise/entities/pet";
 import type { PetRepository } from "../repositories/pet-repository";
 
-export function getPublishEligibility(pet: Pet | null) {
-  if (!pet) {
-    return { allowed: false, error: new ResourceNotFoundError() };
+export function getPublishEligibility(org: Organization, pet: Pet) {
+  if (pet.orgId.toString() !== org.id.toString()) {
+    return { allowed: false, error: new InvalidCredentialsError() };
   }
 
   if (pet.pictures.length === 0 || pet.adoptionRequirements.length === 0) {
@@ -28,16 +31,30 @@ export function getPublishEligibility(pet: Pet | null) {
 }
 
 export interface FetchPetUseCaseParams {
-  id: string;
+  orgId: string;
+  petId: string;
 }
 
 export class PublishPetUseCase {
-  constructor(private petRepository: PetRepository) {}
+  constructor(
+    private orgRepository: OrgRepository,
+    private petRepository: PetRepository,
+  ) {}
 
-  async execute({ id }: FetchPetUseCaseParams): Promise<void> {
-    const pet = await this.petRepository.getById(id);
+  async execute({ orgId, petId }: FetchPetUseCaseParams): Promise<void> {
+    const org = await this.orgRepository.findById(orgId);
 
-    const eligibility = getPublishEligibility(pet);
+    if (!org) {
+      throw new ResourceNotFoundError();
+    }
+
+    const pet = await this.petRepository.findById(petId);
+
+    if (!pet) {
+      throw new ResourceNotFoundError();
+    }
+
+    const eligibility = getPublishEligibility(org, pet);
 
     if (!eligibility.allowed) {
       throw eligibility.error;
