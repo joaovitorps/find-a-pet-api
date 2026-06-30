@@ -11,19 +11,17 @@ export function getPublishEligibility(org: Organization, pet: Pet) {
     return { allowed: false, error: new InvalidCredentialsError() };
   }
 
-  if (pet.pictures.length === 0 || pet.adoptionRequirements.length === 0) {
+  if (pet.pictures.length === 0) {
     return {
       allowed: false,
-      error: new ValidationError({ cause: "Needs at least one photo." }),
+      error: new ValidationError("Needs at least one photo."),
     };
   }
 
   if (pet.adoptionRequirements.length === 0) {
     return {
       allowed: false,
-      error: new ValidationError({
-        cause: "Needs at least one adoption requirement.",
-      }),
+      error: new ValidationError("Needs at least one adoption requirement."),
     };
   }
 

@@ -25,7 +25,7 @@ export class Password {
     const result = PasswordSchema.safeParse(password);
 
     if (!result.success) {
-      throw new ValidationError({ cause: result.error.message });
+      throw new ValidationError(result.error.message);
     }
   }
 

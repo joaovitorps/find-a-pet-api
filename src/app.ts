@@ -1,10 +1,12 @@
 import { fastifyCookie } from "@fastify/cookie";
+import fastifyCors from "@fastify/cors";
 import { fastifyJwt } from "@fastify/jwt";
 import { type FastifyServerOptions, fastify } from "fastify";
 import { z } from "zod";
 import { InvalidCredentialsError } from "./core/errors/invalid-credentials";
 import { ResourceAlreadyExistsError } from "./core/errors/resource-already-exists-error";
 import { ResourceNotFoundError } from "./core/errors/resource-not-found";
+import { ValidationError } from "./core/errors/validation-error";
 import type { OrgRepository } from "./domain/organization/application/repositories/org-repository";
 import type { PetRepository } from "./domain/pet/application/repositories/pet-repository";
 import { env } from "./env";
@@ -22,9 +24,20 @@ export function build(
 ) {
   const app = fastify(opts);
 
+  app.register(fastifyCors, {
+    origin: env.WEB_DOMAIN,
+    credentials: true,
+    methods: ["GET", "POST", "PATCH"],
+  });
+
   app.setErrorHandler((error, _, reply) => {
-    if (error instanceof z.ZodError) {
-      return reply.status(400).send({ issues: error.issues });
+    if (error instanceof z.ZodError || error instanceof ValidationError) {
+      return reply
+        .status(400)
+        .send({
+          issues: error.message,
+          cause: "issues" in error ? error.issues : error.cause,
+        });
     }
 
     if (error instanceof InvalidCredentialsError) {
