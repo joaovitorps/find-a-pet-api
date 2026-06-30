@@ -65,4 +65,6 @@ describe("Create Org Use Case", async () => {
 
     expect(orgData.password).not.toEqual(organization.password);
   });
+
+  it.todo("must not return the hash", async () => {});
 });

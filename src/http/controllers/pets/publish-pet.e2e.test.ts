@@ -18,7 +18,7 @@ describe("PATCH /pets/:petId/publish", async () => {
     await ctx.cleanup();
   });
 
-  it("should be able to publish a pet", async () => {
+  it("should be able to publish a pet if is ADMIN", async () => {
     const { token } = await createAndAuthenticateOrg(ctx.app);
 
     const dbOrg = await ctx.db.org.findFirstOrThrow();

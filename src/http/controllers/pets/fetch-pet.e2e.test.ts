@@ -27,6 +27,7 @@ describe("POST /organizations/:orgId/pets", async () => {
     const { petParams: pet1 } = await makePet({
       orgId: new UniqueEntityID(dbOrg.id),
     });
+
     const { petParams: pet2 } = await makePet({
       orgId: new UniqueEntityID(dbOrg.id),
     });
@@ -51,10 +52,7 @@ describe("POST /organizations/:orgId/pets", async () => {
 
     const response = await ctx.app.inject({
       method: "GET",
-      url: `/pets?city=s%C3%A3o+Paulo&age=FILHOTE`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      url: `/pets?city=s%C3%A3o+Paulo`,
     });
 
     expect(response.statusCode).toEqual(200);

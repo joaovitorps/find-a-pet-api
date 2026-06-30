@@ -41,14 +41,11 @@ describe("POST /api/login", async () => {
       },
     });
 
-
-    expect(response.headers["set-cookie"]?.includes("token")).toBe(true)
+    expect(response.headers["set-cookie"]?.includes("token")).toBe(true);
     expect(response.statusCode).toEqual(200);
 
-    const body = await response.json()
-    
+    const body = await response.json();
+
     expect(body).toEqual({ token: expect.any(String) });
   });
-
-  
 });

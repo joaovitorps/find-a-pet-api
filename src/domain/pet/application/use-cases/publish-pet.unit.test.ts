@@ -1,3 +1,4 @@
+import { InvalidCredentialsError } from "@/core/errors/invalid-credentials";
 import { ValidationError } from "@/core/errors/validation-error";
 import { makeOrg } from "@/test/factories/make-org";
 import { makePet } from "@/test/factories/make-pet";
@@ -13,19 +14,22 @@ describe("Publish Pet Use Case", async () => {
   beforeEach(() => {
     inMemoryPetRepository = new InMemoryPetRepository();
     inMemoryOrgRepository = new InMemoryOrgRepository();
-    sut = new PublishPetUseCase(inMemoryPetRepository);
+    sut = new PublishPetUseCase(inMemoryOrgRepository, inMemoryPetRepository);
   });
 
   it("should publish a Pet", async () => {
     const { newOrg } = await makeOrg();
 
-    inMemoryOrgRepository.create(newOrg.toDBCreateDTO());
+    inMemoryOrgRepository.create(newOrg);
 
     const { newPet } = await makePet({ orgId: newOrg.id });
 
     inMemoryPetRepository.create(newPet);
 
-    await sut.execute({ id: newPet.id.toString() });
+    await sut.execute({
+      orgId: newOrg.id.toString(),
+      petId: newPet.id.toString(),
+    });
 
     expect(inMemoryPetRepository.pets[0]?.status).toEqual("PUBLISHED");
   });
@@ -33,14 +37,14 @@ describe("Publish Pet Use Case", async () => {
   it("should not be able to publish a Pet with no pictures", async () => {
     const { newOrg } = await makeOrg();
 
-    inMemoryOrgRepository.create(newOrg.toDBCreateDTO());
+    inMemoryOrgRepository.create(newOrg);
 
     const { newPet } = await makePet({ orgId: newOrg.id, pictures: [] });
 
     inMemoryPetRepository.create(newPet);
 
     await expect(
-      sut.execute({ id: newPet.id.toString() }),
+      sut.execute({ orgId: newOrg.id.toString(), petId: newPet.id.toString() }),
     ).rejects.toBeInstanceOf(ValidationError);
 
     expect(inMemoryPetRepository.pets[0]?.status).toEqual("DRAFT");
@@ -49,7 +53,7 @@ describe("Publish Pet Use Case", async () => {
   it("should not be able to publish a Pet with no adoption requirements", async () => {
     const { newOrg } = await makeOrg();
 
-    inMemoryOrgRepository.create(newOrg.toDBCreateDTO());
+    inMemoryOrgRepository.create(newOrg);
 
     const { newPet } = await makePet({
       orgId: newOrg.id,
@@ -59,8 +63,31 @@ describe("Publish Pet Use Case", async () => {
     inMemoryPetRepository.create(newPet);
 
     await expect(
-      sut.execute({ id: newPet.id.toString() }),
+      sut.execute({ orgId: newOrg.id.toString(), petId: newPet.id.toString() }),
     ).rejects.toBeInstanceOf(ValidationError);
+
+    expect(inMemoryPetRepository.pets[0]?.status).toEqual("DRAFT");
+  });
+
+  it("should not be able to publish a Pet if not logged as the org that published the pet", async () => {
+    const { newOrg } = await makeOrg();
+    const { newOrg: org2 } = await makeOrg({
+      name: "Org 2",
+    });
+
+    inMemoryOrgRepository.create(newOrg);
+    inMemoryOrgRepository.create(org2);
+
+    const { newPet } = await makePet({
+      orgId: newOrg.id,
+      adoptionRequirements: [],
+    });
+
+    inMemoryPetRepository.create(newPet);
+
+    await expect(
+      sut.execute({ orgId: org2.id.toString(), petId: newPet.id.toString() }),
+    ).rejects.toBeInstanceOf(InvalidCredentialsError);
 
     expect(inMemoryPetRepository.pets[0]?.status).toEqual("DRAFT");
   });

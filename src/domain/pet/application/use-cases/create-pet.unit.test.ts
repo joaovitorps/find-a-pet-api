@@ -18,7 +18,7 @@ describe("Create Pet Use Case", async () => {
   it("should create a Pet", async () => {
     const { newOrg } = await makeOrg();
 
-    inMemoryOrgRepository.create(newOrg.toDBCreateDTO());
+    inMemoryOrgRepository.create(newOrg);
 
     const { petParams } = await makePet({ orgId: newOrg.id });
 

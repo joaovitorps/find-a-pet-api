@@ -15,20 +15,20 @@ describe("Login Use Case", async () => {
   it("should be able to login with valid email and password", async () => {
     const { orgData, newOrg } = await makeOrg();
 
-    inMemoryOrgRepository.create(newOrg.toDBCreateDTO());
+    inMemoryOrgRepository.create(newOrg);
 
     const { org } = await sut.execute({
       email: orgData.email,
       password: orgData.password,
     });
 
-    expect(org.id).toEqual(expect.any(String));
+    expect(org.id.toString()).toEqual(expect.any(String));
   });
 
   it("should throw InvalidCredentialsError on wrong email or password", async () => {
     const { orgData, newOrg } = await makeOrg();
 
-    inMemoryOrgRepository.create(newOrg.toDBCreateDTO());
+    inMemoryOrgRepository.create(newOrg);
 
     await expect(
       sut.execute({

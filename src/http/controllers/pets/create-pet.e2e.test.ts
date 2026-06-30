@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { makeOrg } from "@/test/factories/make-org";
 import { makePet } from "@/test/factories/make-pet";
 import { setupE2E } from "@/test/setup-e2e";
+import { createAndAuthenticateOrg } from "@/test/utils/create-and-authenticate-org";
 
 describe("POST /organizations/:orgId/pets", async () => {
   let ctx: Awaited<ReturnType<typeof setupE2E>>;
@@ -19,31 +20,7 @@ describe("POST /organizations/:orgId/pets", async () => {
   });
 
   it("should create a pet", async () => {
-    const { orgData } = await makeOrg();
-
-    await ctx.app.inject({
-      method: "POST",
-      url: "/api/organizations",
-      body: {
-        name: orgData.name,
-        email: orgData.email,
-        password: orgData.password,
-        ownerName: orgData.ownerName,
-        address: orgData.address,
-        phone: orgData.phone,
-      },
-    });
-
-    const authResponse = await ctx.app.inject({
-      method: "POST",
-      url: "/api/sessions",
-      body: {
-        email: orgData.email,
-        password: orgData.password,
-      },
-    });
-
-    const { token } = await authResponse.json();
+    const { token } = await createAndAuthenticateOrg(ctx.app);
 
     const { petParams } = await makePet();
 

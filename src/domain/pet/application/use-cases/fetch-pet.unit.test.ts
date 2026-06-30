@@ -39,9 +39,13 @@ describe("Fetch Pet Use Case", async () => {
 
     inMemoryPetRepository.create(newPet);
 
+    const petFilters = {
+      age: Age.FILHOTE,
+    };
+
     const { pets } = await sut.execute({
       city: "São Paulo",
-      age: "FILHOTE",
+      petFilters,
     });
 
     expect(pets).toHaveLength(1);
@@ -57,9 +61,13 @@ describe("Fetch Pet Use Case", async () => {
 
     inMemoryPetRepository.create(newPet);
 
+    const petFilters = {
+      age: Age.FILHOTE,
+    };
+
     const { pets } = await sut.execute({
       city: "no matching city",
-      age: "NO MACHING FILTER",
+      petFilters,
     });
 
     expect(pets).toHaveLength(0);
@@ -74,10 +82,14 @@ describe("Fetch Pet Use Case", async () => {
 
     inMemoryPetRepository.create(newPet);
 
-    const { pets } = await sut.execute({
-      city: "São Paulo",
+    const petFilters = {
       age: Age.FILHOTE,
       energyLevel: EnergyLevel.MEDIO,
+    };
+
+    const { pets } = await sut.execute({
+      city: "São Paulo",
+      petFilters,
     });
 
     expect(pets).toHaveLength(1);
@@ -93,10 +105,14 @@ describe("Fetch Pet Use Case", async () => {
 
     inMemoryPetRepository.create(newPet);
 
+    const petFilters = {
+      age: Age.FILHOTE,
+      energyLevel: EnergyLevel.BAIXO,
+    };
+
     const { pets } = await sut.execute({
       city: "São Paulo",
-      age: "FILHOTE",
-      energyLevel: "LOW",
+      petFilters,
     });
 
     expect(pets).toHaveLength(1);
