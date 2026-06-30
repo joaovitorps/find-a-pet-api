@@ -18,6 +18,10 @@ export class InMemoryPetRepository implements PetRepository {
     return pet;
   }
 
+  async findByOrgId(orgId: string) {
+    return this.pets.filter((pet) => pet.orgId.toString() === orgId);
+  }
+
   async filter(orgCity: string, filters?: PetFilters) {
     const orgsOfCity = new Set(
       this.orgs

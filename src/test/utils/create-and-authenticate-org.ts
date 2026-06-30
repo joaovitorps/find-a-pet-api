@@ -6,7 +6,7 @@ export async function createAndAuthenticateOrg(app: FastifyInstance) {
 
   await app.inject({
     method: "POST",
-    url: "/api/organizations",
+    url: "/organizations",
     body: {
       name: orgData.name,
       email: orgData.email,
@@ -19,7 +19,7 @@ export async function createAndAuthenticateOrg(app: FastifyInstance) {
 
   const authResponse = await app.inject({
     method: "POST",
-    url: "/api/sessions",
+    url: "/sessions",
     body: {
       email: orgData.email,
       password: orgData.password,

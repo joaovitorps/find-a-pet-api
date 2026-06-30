@@ -5,6 +5,7 @@ import { verifyJWT } from "@/http/middlewares/jwt";
 import { createPetController } from "./create-pet";
 import { detailsController } from "./details";
 import { fetchPetController } from "./fetch-pet";
+import { fetchPetsByOrgController } from "./fetch-pets-by-org";
 import { publishPetController } from "./publish-pet";
 
 export const petRoutes = (
@@ -12,10 +13,15 @@ export const petRoutes = (
   opts: { orgRepository: OrgRepository; petRepository: PetRepository },
 ) => {
   app.get(`/pets`, fetchPetController(opts.petRepository));
+  app.get(
+    `/pets/mine`,
+    { onRequest: verifyJWT },
+    fetchPetsByOrgController(opts.petRepository),
+  );
   app.get(`/pets/:petId`, detailsController(opts.petRepository));
 
   app.post(
-    `/organizations/:orgId/pets`,
+    `/pets`,
     { onRequest: verifyJWT },
     createPetController(opts.orgRepository, opts.petRepository),
   );

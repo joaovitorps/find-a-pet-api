@@ -1,7 +1,7 @@
 import { makeOrg } from "@/test/factories/make-org";
 import { setupE2E } from "@/test/setup-e2e";
 
-describe("POST /api/organizations", async () => {
+describe("POST /organizations", async () => {
   let ctx: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeAll(async () => {
@@ -21,7 +21,7 @@ describe("POST /api/organizations", async () => {
 
     const response = await ctx.app.inject({
       method: "POST",
-      url: "/api/organizations",
+      url: "/organizations",
       body: {
         name: orgData.name,
         email: orgData.email,
@@ -40,7 +40,7 @@ describe("POST /api/organizations", async () => {
 
     await ctx.app.inject({
       method: "POST",
-      url: "/api/organizations",
+      url: "/organizations",
       body: {
         name: orgData.name,
         email: orgData.email,
@@ -53,7 +53,7 @@ describe("POST /api/organizations", async () => {
 
     const response = await ctx.app.inject({
       method: "POST",
-      url: "/api/organizations",
+      url: "/organizations",
       body: {
         name: orgData.name,
         email: orgData.email,
@@ -70,7 +70,7 @@ describe("POST /api/organizations", async () => {
   it("should return 400 if invalid body", async () => {
     const response = await ctx.app.inject({
       method: "POST",
-      url: "/api/organizations",
+      url: "/organizations",
       body: {},
     });
 

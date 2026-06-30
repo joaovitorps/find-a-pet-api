@@ -29,7 +29,7 @@ describe("POST /pets/:petId", async () => {
 
     await ctx.app.inject({
       method: "POST",
-      url: `/organizations/${dbOrg.id}/pets`,
+      url: `/pets`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -49,7 +49,7 @@ describe("POST /pets/:petId", async () => {
     expect(response.statusCode).toEqual(200);
 
     const data = await response.json();
-    
+
     expect(data.pet).toEqual(
       expect.objectContaining({
         name: "Buddy",

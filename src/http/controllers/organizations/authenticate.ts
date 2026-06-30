@@ -28,6 +28,6 @@ export const authenticateController = (orgRepo: OrgRepository) => {
       sameSite: true, // alternative CSRF protection
     });
 
-    return reply.code(200).send({ token });
+    return reply.code(200).send({ org: { id: org.id, name: org.name }, token });
   };
 };

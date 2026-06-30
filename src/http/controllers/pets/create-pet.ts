@@ -17,16 +17,12 @@ const RequestBodySchema = z.object({
   adoptionRequirements: z.array(z.string()),
 });
 
-const QueryUrlSchema = z.object({
-  orgId: z.uuid(),
-});
-
 export const createPetController = (
   orgRepo: OrgRepository,
   petRepository: PetRepository,
 ) => {
   return async (req: FastifyRequest, reply: FastifyReply) => {
-    const { orgId } = QueryUrlSchema.parse(req.params);
+    const orgId = req.org.id;
 
     const {
       name,

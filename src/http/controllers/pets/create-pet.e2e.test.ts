@@ -1,10 +1,8 @@
-import { randomUUID } from "node:crypto";
-import { makeOrg } from "@/test/factories/make-org";
 import { makePet } from "@/test/factories/make-pet";
 import { setupE2E } from "@/test/setup-e2e";
 import { createAndAuthenticateOrg } from "@/test/utils/create-and-authenticate-org";
 
-describe("POST /organizations/:orgId/pets", async () => {
+describe("POST /pets", async () => {
   let ctx: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeAll(async () => {
@@ -24,11 +22,9 @@ describe("POST /organizations/:orgId/pets", async () => {
 
     const { petParams } = await makePet();
 
-    const dbOrg = await ctx.db.org.findFirstOrThrow();
-
     const response = await ctx.app.inject({
       method: "POST",
-      url: `/organizations/${dbOrg.id}/pets`,
+      url: `/pets`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -43,7 +39,7 @@ describe("POST /organizations/:orgId/pets", async () => {
 
     const response = await ctx.app.inject({
       method: "POST",
-      url: `/organizations/${randomUUID()}/pets`,
+      url: `/pets`,
       body: petParams,
     });
 

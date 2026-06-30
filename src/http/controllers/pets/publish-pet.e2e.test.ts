@@ -29,7 +29,7 @@ describe("PATCH /pets/:petId/publish", async () => {
 
     await ctx.app.inject({
       method: "POST",
-      url: `/organizations/${dbOrg.id}/pets`,
+      url: `/pets`,
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -1,7 +1,7 @@
 import { makeOrg } from "@/test/factories/make-org";
 import { setupE2E } from "@/test/setup-e2e";
 
-describe("POST /api/login", async () => {
+describe("POST /sessions", async () => {
   let ctx: Awaited<ReturnType<typeof setupE2E>>;
 
   beforeAll(async () => {
@@ -21,7 +21,7 @@ describe("POST /api/login", async () => {
 
     await ctx.app.inject({
       method: "POST",
-      url: "/api/organizations",
+      url: "/organizations",
       body: {
         name: orgData.name,
         email: orgData.email,
@@ -34,7 +34,7 @@ describe("POST /api/login", async () => {
 
     const response = await ctx.app.inject({
       method: "POST",
-      url: "/api/sessions",
+      url: "/sessions",
       body: {
         email: orgData.email,
         password: orgData.password,
@@ -46,6 +46,13 @@ describe("POST /api/login", async () => {
 
     const body = await response.json();
 
-    expect(body).toEqual({ token: expect.any(String) });
+    const dbOrg = await ctx.db.org.findFirstOrThrow();
+
+    expect(body).toEqual(
+      expect.objectContaining({
+        org: { id: dbOrg.id, name: dbOrg.name },
+        token: expect.any(String),
+      }),
+    );
   });
 });

@@ -7,9 +7,6 @@ export const organizationRoutes = (
   app: FastifyInstance,
   opts: { orgRepository: OrgRepository },
 ) => {
-  app.post(
-    "/api/organizations",
-    createOrganizationController(opts.orgRepository),
-  );
-  app.post("/api/sessions", authenticateController(opts.orgRepository));
+  app.post("/organizations", createOrganizationController(opts.orgRepository));
+  app.post("/sessions", authenticateController(opts.orgRepository));
 };

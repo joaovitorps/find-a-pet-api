@@ -48,6 +48,31 @@ export class PrismaPetRepository implements PetRepository {
     );
   }
 
+  async findByOrgId(orgId: string): Promise<Pet[]> {
+    const pets = await this.db.pet.findMany({
+      where: { orgId },
+    });
+
+    return pets.map((pet) =>
+      Pet.create(
+        {
+          orgId: new UniqueEntityID(pet.orgId),
+          name: pet.name,
+          about: pet.about,
+          status: pet.status as Status,
+          age: pet.age as Age,
+          size: pet.size as Size,
+          energyLevel: pet.energyLevel as EnergyLevel,
+          independencyLevel: pet.independencyLevel as IndependencyLevel,
+          environment: pet.environment as Environment,
+          pictures: pet.pictures,
+          adoptionRequirements: pet.adoptionRequirements,
+        },
+        new UniqueEntityID(pet.id),
+      ),
+    );
+  }
+
   async save(pet: Pet): Promise<void> {
     await this.db.pet.update({
       where: { id: pet.id.toString() },
