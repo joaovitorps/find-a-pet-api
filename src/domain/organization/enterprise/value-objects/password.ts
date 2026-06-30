@@ -36,4 +36,8 @@ export class Password {
 
     return new Password(hash);
   }
+
+  static createFromHash(hash: string) {
+    return new Password(hash);
+  }
 }

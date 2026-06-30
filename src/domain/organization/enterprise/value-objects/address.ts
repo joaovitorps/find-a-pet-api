@@ -15,7 +15,7 @@ export class Address {
   public readonly state: string;
   public readonly complement?: string;
 
-  constructor({
+  private constructor({
     number,
     street,
     neighborhood,
@@ -50,5 +50,11 @@ export class Address {
 
   static create(props: AddressProps) {
     return new Address({ ...props });
+  }
+
+  static createFromString(fullAddress: string) {
+    const [street = "", number = "", neighborhood = "", city = "", state = ""] =
+      fullAddress.split(", ");
+    return new Address({ street, number, neighborhood, city, state });
   }
 }
