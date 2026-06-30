@@ -77,7 +77,16 @@ export class PrismaPetRepository implements PetRepository {
     await this.db.pet.update({
       where: { id: pet.id.toString() },
       data: {
-        status: "PUBLISHED",
+        name: pet.name,
+        about: pet.about,
+        status: pet.status,
+        age: pet.age,
+        size: pet.size,
+        energyLevel: pet.energyLevel,
+        independencyLevel: pet.independencyLevel,
+        environment: pet.environment,
+        pictures: pet.pictures,
+        adoptionRequirements: pet.adoptionRequirements,
       },
     });
   }

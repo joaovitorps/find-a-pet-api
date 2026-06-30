@@ -112,6 +112,51 @@ export class Pet extends Entity<PetProps> {
     this.touch();
   }
 
+  set name(value: string) {
+    this.props.name = value;
+    this.touch();
+  }
+
+  set about(value: string | null) {
+    this.props.about = value;
+    this.touch();
+  }
+
+  set age(value: Age) {
+    this.props.age = value;
+    this.touch();
+  }
+
+  set size(value: Size) {
+    this.props.size = value;
+    this.touch();
+  }
+
+  set energyLevel(value: EnergyLevel) {
+    this.props.energyLevel = value;
+    this.touch();
+  }
+
+  set independencyLevel(value: IndependencyLevel) {
+    this.props.independencyLevel = value;
+    this.touch();
+  }
+
+  set environment(value: Environment) {
+    this.props.environment = value;
+    this.touch();
+  }
+
+  set pictures(value: string[]) {
+    this.props.pictures = value;
+    this.touch();
+  }
+
+  set adoptionRequirements(value: string[]) {
+    this.props.adoptionRequirements = value;
+    this.touch();
+  }
+
   private touch() {
     this.props.updatedAt = new Date();
   }
@@ -137,7 +182,7 @@ export class Pet extends Entity<PetProps> {
 
   static create(props: Optional<PetProps, "createdAt">, id?: UniqueEntityID) {
     const createdAt = props.createdAt ?? new Date();
-    
+
     return new Pet(
       {
         ...props,

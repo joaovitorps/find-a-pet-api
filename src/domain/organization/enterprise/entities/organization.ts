@@ -1,7 +1,6 @@
 import type { Optional } from "@/@types/optional";
 import { Entity } from "@/core/entities/entity";
 import type { UniqueEntityID } from "@/core/entities/unique-entity-id";
-import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 import type { Address } from "../value-objects/address";
 import type { Password } from "../value-objects/password";
 import type { Phone } from "../value-objects/phone";
