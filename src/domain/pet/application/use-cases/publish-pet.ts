@@ -6,7 +6,7 @@ import type { Organization } from "@/domain/organization/enterprise/entities/org
 import { type Pet, Status } from "../../enterprise/entities/pet";
 import type { PetRepository } from "../repositories/pet-repository";
 
-export function getPublishEligibility(org: Organization, pet: Pet) {
+function getPublishEligibility(org: Organization, pet: Pet) {
   if (pet.orgId.toString() !== org.id.toString()) {
     return { allowed: false, error: new InvalidCredentialsError() };
   }

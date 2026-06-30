@@ -1,6 +1,7 @@
 import type { Optional } from "@/@types/optional";
 import { Entity } from "@/core/entities/entity";
 import type { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { ValidationError } from "@/core/errors/validation-error";
 
 export enum Status {
   DRAFT = "DRAFT",

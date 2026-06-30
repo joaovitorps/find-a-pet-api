@@ -1,5 +1,6 @@
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found";
+import { ValidationError } from "@/core/errors/validation-error";
 import type { OrgRepository } from "@/domain/organization/application/repositories/org-repository";
 import {
   type Age,
@@ -11,6 +12,26 @@ import {
   type Status,
 } from "../../enterprise/entities/pet";
 import type { PetRepository } from "../repositories/pet-repository";
+
+function getPublishEligibility(pet: Pet) {
+  if (pet.pictures.length > 3) {
+    return {
+      allowed: false,
+      error: new ValidationError("Cannot add more than 3 pictures."),
+    };
+  }
+
+  if (pet.adoptionRequirements.length > 3) {
+    return {
+      allowed: false,
+      error: new ValidationError(
+        "Cannot add more than 3 pictures adoption requirements.",
+      ),
+    };
+  }
+
+  return { allowed: true };
+}
 
 export interface CreatePetUseCaseParams {
   orgId: string;
@@ -62,6 +83,12 @@ export class CreatePetUseCase {
       pictures,
       adoptionRequirements,
     });
+
+    const eligibility = getPublishEligibility(pet);
+
+    if (!eligibility.allowed) {
+      throw eligibility.error;
+    }
 
     await this.petRepository.create(pet);
   }
