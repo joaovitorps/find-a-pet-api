@@ -4,7 +4,7 @@ import type { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import type { OrgUncheckedCreateInput } from "@/generated/prisma/models";
 import type { Address } from "../value-objects/address";
 import type { Password } from "../value-objects/password";
-import { Phone } from "../value-objects/phone";
+import type { Phone } from "../value-objects/phone";
 
 export interface OrganizationProps {
   name: string;
@@ -50,22 +50,6 @@ export class Organization extends Entity<OrganizationProps> {
     return this.props.updatedAt;
   }
 
-  // private touch() {
-  //   this.props.updatedAt = new Date();
-  // }
-
-  toDBCreateDTO(): OrgUncheckedCreateInput {
-    return {
-      id: this.id.toString(),
-      name: this.name,
-      email: this.email,
-      password: this.password.hash,
-      ownerName: this.ownerName,
-      address: this.address.toString(),
-      phone: this.phone,
-    };
-  }
-
   static create(
     props: Optional<OrganizationProps, "createdAt">,
     id?: UniqueEntityID,
@@ -73,7 +57,6 @@ export class Organization extends Entity<OrganizationProps> {
     return new Organization(
       {
         ...props,
-        phone: Phone.create(props.phone.number),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

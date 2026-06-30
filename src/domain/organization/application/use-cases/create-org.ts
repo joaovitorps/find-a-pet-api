@@ -53,7 +53,7 @@ export class CreateOrgUseCase {
       phone: Phone.create(phone),
     });
 
-    await this.orgRepository.create(organization.toDBCreateDTO());
+    await this.orgRepository.create(organization);
 
     return { organization };
   }
