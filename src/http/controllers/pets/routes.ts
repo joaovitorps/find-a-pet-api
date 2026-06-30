@@ -20,7 +20,10 @@ export const petRoutes = (
     { onRequest: verifyJWT },
     fetchPetsByOrgController(opts.petRepository),
   );
-  app.get(`/pets/:petId`, detailsController(opts.petRepository));
+  app.get(
+    `/pets/:petId`,
+    detailsController(opts.orgRepository, opts.petRepository),
+  );
 
   app.post(
     `/pets`,

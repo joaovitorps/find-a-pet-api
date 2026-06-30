@@ -69,5 +69,10 @@ describe("POST /pets/:petId", async () => {
     expect(data.pet.orgId).toEqual(expect.any(String));
     expect(data.pet.createdAt).toEqual(expect.any(String));
     expect(data.pet.updatedAt).toEqual(expect.any(String));
+
+    expect(data.org).toEqual({
+      name: dbOrg.name,
+      phone: dbOrg.phone,
+    });
   });
 });
