@@ -27,17 +27,15 @@ export function build(
   app.register(fastifyCors, {
     origin: env.WEB_DOMAIN,
     credentials: true,
-    methods: ["GET", "POST", "PATCH"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
   });
 
   app.setErrorHandler((error, _, reply) => {
     if (error instanceof z.ZodError || error instanceof ValidationError) {
-      return reply
-        .status(400)
-        .send({
-          issues: error.message,
-          cause: "issues" in error ? error.issues : error.cause,
-        });
+      return reply.status(400).send({
+        issues: error.message,
+        cause: "issues" in error ? error.issues : error.cause,
+      });
     }
 
     if (error instanceof InvalidCredentialsError) {
