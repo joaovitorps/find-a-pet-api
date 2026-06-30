@@ -8,7 +8,7 @@ export class InMemoryPetRepository implements PetRepository {
   pets: Pet[] = [];
   orgs: Organization[] = [];
 
-  async getById(id: string) {
+  async findById(id: string) {
     const pet = this.pets.find((pet) => pet.id.toString() === id);
 
     if (!pet) {

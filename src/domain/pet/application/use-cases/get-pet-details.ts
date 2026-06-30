@@ -16,7 +16,7 @@ export class GetPetDetailsUseCase {
   async execute({
     id,
   }: GetPetDetailsUseCaseParams): Promise<GetPetDetailsUseCaseReturn> {
-    const pet = await this.petRepository.getById(id);
+    const pet = await this.petRepository.findById(id);
 
     if (!pet) {
       throw new ResourceNotFoundError();
