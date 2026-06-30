@@ -61,4 +61,10 @@ export class InMemoryPetRepository implements PetRepository {
 
     this.pets.splice(petIndex, 1, data);
   }
+
+  async delete(pet: Pet): Promise<void> {
+    const petIndex = this.pets.findIndex((p) => p.id === pet.id);
+
+    this.pets.splice(petIndex, 1);
+  }
 }

@@ -7,4 +7,5 @@ export interface PetRepository {
   filter(orgCity: string, filters?: PetFilters): Promise<Pet[]>;
   create(pet: Pet): Promise<void>;
   save(pet: Pet): Promise<void>;
+  delete(pet: Pet): Promise<void>;
 }

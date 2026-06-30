@@ -133,4 +133,8 @@ export class PrismaPetRepository implements PetRepository {
   async create(pet: Pet): Promise<void> {
     await this.db.pet.create({ data: toCreateInput(pet) });
   }
+
+  async delete(pet: Pet): Promise<void> {
+    await this.db.pet.delete({ where: { id: pet.id.toString() } });
+  }
 }
