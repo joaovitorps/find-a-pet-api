@@ -7,6 +7,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string(),
   JWT_SECRET: z.string(),
   WEB_DOMAIN: z.string(),
+  DATADOG_API_KEY: z.string(),
 });
 
 const envParse = z.safeParse(envSchema, process.env);

@@ -51,7 +51,7 @@ export function build(
       return reply.code(404).send();
     }
 
-    console.error(error);
+    app.log.error(error);
 
     return reply.status(500).send(new Error("Unexpected error happened."));
   });

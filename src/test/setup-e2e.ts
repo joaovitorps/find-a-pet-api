@@ -20,13 +20,8 @@ const makeDatabaseUrl = (schema: string) => {
   return stringDbUrl;
 };
 
-const runMigrations = (databaseUrl: string) => {
-  console.log(`[Test Environment] Using schema: ${databaseUrl}`);
-
-  execSync("npx prisma migrate deploy", {
-    cwd: process.cwd(),
-    stdio: "inherit",
-  });
+const runMigrations = () => {
+  execSync("npx prisma migrate deploy");
 };
 
 const createApp = async (db: PrismaClient) => {
@@ -34,7 +29,7 @@ const createApp = async (db: PrismaClient) => {
     {},
     {
       orgRepository: new PrismaOrgRepository(db),
-      petRepository: new PrismaPetRepository(db)
+      petRepository: new PrismaPetRepository(db),
     },
   );
 
@@ -48,7 +43,7 @@ export async function setupE2E() {
   const databaseUrl = makeDatabaseUrl(schema);
 
   const db = createPrismaClient(databaseUrl);
-  runMigrations(databaseUrl);
+  runMigrations();
 
   const app = await createApp(db);
 
