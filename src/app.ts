@@ -40,7 +40,7 @@ export function build(
     }
 
     if (error instanceof InvalidCredentialsError) {
-      return reply.code(401).send(error.message);
+      return reply.code(401).send(new Error(error.message));
     }
 
     if (error instanceof ResourceAlreadyExistsError) {

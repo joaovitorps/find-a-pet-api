@@ -2,9 +2,9 @@
   "name": "find-a-pet-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup-node src/server.ts --format esm --minify --tsconfig tsconfig.json",
     "start": "node --import tsx/esm dist/server.js",
     "dev": "tsx --watch src/server.ts",
     "test": "vitest run",
@@ -31,6 +31,7 @@
     "prisma": "7.8.0",
     "supertest": "7.2.2",
     "tsx": "4.22.4",
+    "tsup": "8.5.1",
     "typescript": "6.0.3",
     "typescript-eslint": "8.61.0",
     "vitest": "4.1.8"
