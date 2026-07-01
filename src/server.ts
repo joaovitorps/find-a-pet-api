@@ -10,6 +10,6 @@ const server = build({
   },
 });
 
-server.listen({ port: env.PORT, host: "127.0.0.1" }, (_err, address) => {
+server.listen({ port: env.PORT, host: "0.0.0.0" }, (_err, address) => {
   console.log(`😎 Server is running at ${address}`);
 });
