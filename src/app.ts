@@ -10,6 +10,7 @@ import { ValidationError } from "./core/errors/validation-error";
 import type { OrgRepository } from "./domain/organization/application/repositories/org-repository";
 import type { PetRepository } from "./domain/pet/application/repositories/pet-repository";
 import { env } from "./env";
+import { healthRoutes } from "./http/controllers/health/routes";
 import { organizationRoutes } from "./http/controllers/organizations/routes";
 import { petRoutes } from "./http/controllers/pets/routes";
 import { PrismaOrgRepository } from "./infra/database/prisma/repositories/prisma-org-repository";
@@ -69,6 +70,7 @@ export function build(
 
   app.register(organizationRoutes, { orgRepository });
   app.register(petRoutes, { orgRepository, petRepository });
+  app.register(healthRoutes);
 
   return app;
 }
