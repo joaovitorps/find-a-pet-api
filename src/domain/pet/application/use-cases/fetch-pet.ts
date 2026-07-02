@@ -18,7 +18,7 @@ export class FetchPetUseCase {
     city,
     petFilters,
   }: FetchPetUseCaseParams): Promise<FetchPetUseCaseReturn> {
-    const pets = await this.petRepository.filter(city, petFilters);
+    const pets = await this.petRepository.filterPublished(city, petFilters);
 
     return { pets };
   }

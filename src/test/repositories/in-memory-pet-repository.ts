@@ -1,6 +1,6 @@
 import type { Organization } from "@/domain/organization/enterprise/entities/organization";
 import type { PetRepository } from "@/domain/pet/application/repositories/pet-repository";
-import type { Pet } from "@/domain/pet/enterprise/entities/pet";
+import { type Pet, Status } from "@/domain/pet/enterprise/entities/pet";
 import type { PetFilters } from "@/http/controllers/pets/fetch-pet";
 import { normalize } from "@/utils/string-normalize";
 
@@ -22,7 +22,7 @@ export class InMemoryPetRepository implements PetRepository {
     return this.pets.filter((pet) => pet.orgId.toString() === orgId);
   }
 
-  async filter(orgCity: string, filters?: PetFilters) {
+  async filterPublished(orgCity: string, filters?: PetFilters) {
     const orgsOfCity = new Set(
       this.orgs
         .filter((org) => normalize(org.address.city) === normalize(orgCity))
@@ -42,13 +42,15 @@ export class InMemoryPetRepository implements PetRepository {
           });
       }
 
-      const matchOrg = orgsOfCity.has(pet.orgId.toString());
+      const matchOrgCity = orgsOfCity.has(pet.orgId.toString());
+
+      const filterPublished = pet.status === Status.PUBLISHED;
 
       if (matchFilter) {
-        return matchOrg && matchFilter;
+        return matchOrgCity && matchFilter;
       }
 
-      return matchOrg;
+      return matchOrgCity && filterPublished;
     });
   }
 
