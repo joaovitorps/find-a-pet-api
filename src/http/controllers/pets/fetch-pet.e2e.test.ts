@@ -19,7 +19,7 @@ describe("GET /pets", async () => {
     await ctx.cleanup();
   });
 
-  it("should fetch all pets of requested city", async () => {
+  it("should fetch PUBLISHED pets of requested city", async () => {
     const { token } = await createAndAuthenticateOrg(ctx.app);
 
     const dbOrg = await ctx.db.org.findFirstOrThrow();
@@ -41,6 +41,8 @@ describe("GET /pets", async () => {
       body: pet1,
     });
 
+    const dbPet1 = await ctx.db.pet.findFirstOrThrow();
+
     await ctx.app.inject({
       method: "POST",
       url: `/pets`,
@@ -48,6 +50,14 @@ describe("GET /pets", async () => {
         Authorization: `Bearer ${token}`,
       },
       body: pet2,
+    });
+
+    await ctx.app.inject({
+      method: "PATCH",
+      url: `/pets/${dbPet1.id.toString()}/publish`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const response = await ctx.app.inject({
@@ -60,10 +70,10 @@ describe("GET /pets", async () => {
     const data = await response.json();
 
     expect(data.pets).toBeDefined();
-    expect(data.pets).toHaveLength(2);
+    expect(data.pets).toHaveLength(1);
   });
 
-  it("should fetch all pets of requested city and filters", async () => {
+  it("should fetch PUBLISHED pets of requested city and filters", async () => {
     const { token } = await createAndAuthenticateOrg(ctx.app);
 
     const dbOrg = await ctx.db.org.findFirstOrThrow();
@@ -85,6 +95,8 @@ describe("GET /pets", async () => {
       body: pet1,
     });
 
+    const dbPet1 = await ctx.db.pet.findFirstOrThrow();
+
     await ctx.app.inject({
       method: "POST",
       url: `/pets`,
@@ -92,6 +104,14 @@ describe("GET /pets", async () => {
         Authorization: `Bearer ${token}`,
       },
       body: pet2,
+    });
+
+    await ctx.app.inject({
+      method: "PATCH",
+      url: `/pets/${dbPet1.id.toString()}/publish`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     const response = await ctx.app.inject({

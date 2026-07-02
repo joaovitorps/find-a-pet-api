@@ -16,15 +16,15 @@ export const petRoutes = (
 ) => {
   app.get(`/pets`, fetchPetController(opts.petRepository));
   app.get(
-    `/pets/mine`,
-    { onRequest: verifyJWT },
-    fetchPetsByOrgController(opts.petRepository),
-  );
-  app.get(
     `/pets/:petId`,
     detailsController(opts.orgRepository, opts.petRepository),
   );
 
+  app.get(
+    `/pets/mine`,
+    { onRequest: verifyJWT },
+    fetchPetsByOrgController(opts.petRepository),
+  );
   app.post(
     `/pets`,
     { onRequest: verifyJWT },

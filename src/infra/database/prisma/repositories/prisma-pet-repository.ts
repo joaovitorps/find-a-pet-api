@@ -91,11 +91,12 @@ export class PrismaPetRepository implements PetRepository {
     });
   }
 
-  async filter(city: string, filters?: PetFilters): Promise<Pet[]> {
+  async filterPublished(city: string, filters?: PetFilters): Promise<Pet[]> {
     const where: PetWhereInput = {
       org: {
         address: { contains: normalize(city), mode: "insensitive" },
       },
+      status: "PUBLISHED",
     };
 
     if (filters) {
