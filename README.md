@@ -59,8 +59,10 @@
 - [x] Route to view the details of a specific pet
   - [x] unit test and pet-details use case
   - [x] e2e test / petDetails controller / `/pet/:petId` GET route
-- [ ] Ensure that the ORG’s admin access is restricted to logged-in users
+- [x] Ensure that the ORG’s admin access is restricted to logged-in users
 - [x] Apply SOLID principles while developing the API structure
 - [x] Create tests to validate the functionalities and business rules
+- [ ] Make sure that only published pets are on home
+- [x] Show a message saying that the shown pets are only example and not real pets available for adoption
 
 remember to includes a richer README.md with as much details as possible

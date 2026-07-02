@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "build": "tsup-node src/server.ts --format esm --minify --tsconfig tsconfig.json",
-    "start": "node --import tsx/esm dist/server.js",
+    "build": "tsup-node src/server.ts --format esm --minify --tsconfig tsconfig.build.json",
+        "start": "node --import tsx/esm dist/server.js",
     "dev": "tsx --watch src/server.ts",
     "test": "vitest run",
     "test:watch": "vitest",
